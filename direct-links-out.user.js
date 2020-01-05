@@ -7,7 +7,7 @@
 // @author      nokeya
 // @update      https://github.com/nokeya/direct-links-out/raw/master/direct-links-out.user.js
 // @icon        https://raw.githubusercontent.com/nokeya/direct-links-out/master/icon.png
-// @version     2.20
+// @version     2.22
 // @grant       none
 //google
 // @include     *://google.*
@@ -178,8 +178,8 @@
     }
     // youtube
     function rwYoutube(link){
-        if (/redirect/i.test(link.className))
-            link.setAttribute('data-redirect-href-updated', 'true');
+        anchor = '&q=';
+        after = '&redir_token=';
         rwSimple(link);
     }
     // facebook
@@ -212,8 +212,8 @@
     // yandex
     function rwYandex(link){
         // main search
-        if (link.hasAttribute('onmousedown'))
-            link.removeAttribute('onmousedown');
+        if (link.hasAttribute('data-counter'))
+            link.removeAttribute('data-counter');
         // images
         anchor = '&img_url=';
         after = '&pos=';
@@ -251,8 +251,7 @@
         if (/google/i.test(loc))
             rwLink = rwGoogle;
         else if (/youtube/i.test(loc)){
-            anchor = 'redirect?q=';
-            after = '&redir_token=';
+            after = '&event=';
             rwLink = rwYoutube;
         }
         else if (/(facebook|messenger)/i.test(loc)){
@@ -293,7 +292,7 @@
             rwLink = rwKickass;
         }
         else if (/soundcloud/i.test(loc))
-            anchor = "exit.sc/?url=";
+            anchor = 'exit.sc/?url=';
         else if (/upwork/i.test(loc))
             anchor = 'leaving-odesk?ref=';
         else if (/4pda/i.test(loc)){
@@ -305,17 +304,17 @@
         else if (/danieldefo/i.test(loc))
             rwLink = rwDanielDefo;
         else if (/yaplakal/i.test(loc))
-            anchor = "go/?";
+            anchor = 'go/?';
         else if (/wikimapia.org/i.test(loc))
             anchor = 'external_link?url=';
         else if (/forumavia.ru/i.test(loc))
             anchor = '/e/?l=';
         else if (/picarto/i.test(loc)){
-            anchor = "referrer?go=";
-            after = "&ref=";
+            anchor = 'referrer?go=';
+            after = '&ref=';
         }
         else if (/taker/i.test(loc))
-            anchor = "phpBB2/goto/";
+            anchor = 'phpBB2/goto/';
         else if (/slack/i.test(loc))
             rwLink = rwSlack;
 
