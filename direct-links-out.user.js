@@ -7,7 +7,7 @@
 // @author      nokeya
 // @update      https://github.com/nokeya/direct-links-out/raw/master/direct-links-out.user.js
 // @icon        https://raw.githubusercontent.com/nokeya/direct-links-out/master/icon.png
-// @version     2.19
+// @version     2.20
 // @grant       none
 //google
 // @include     *://google.*
@@ -278,12 +278,11 @@
             anchor = 'st.link=';
             after = '&st.name=';
         }
-        else if (/pixiv/i.test(loc)){
+        else if (/pixiv/i.test(loc))
             anchor = 'url=';
-        }
         else if (/tumblr/i.test(loc)){
-            anchor = "redirect?z=";
-            after = "&t=";
+            anchor = 'redirect?z=';
+            after = '&t=';
         }
         else if (/deviantart/i.test(loc))
             anchor = 'outgoing?';
