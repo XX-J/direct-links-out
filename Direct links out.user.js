@@ -5,8 +5,8 @@
 // @description:ru Убирает "Бла-бла-бла, Вы покидаете наш сайт" и переадресацию из ссылок
 // @namespace   https://github.com/XX-J
 // @author      nokeya & XX-J...
-// @update      https://github.com/XX-J/direct-links-out/raw/master/direct-links-out.user.js
-// @icon        https://raw.githubusercontent.com/XX-J/direct-links-out/master/icon.png
+// @update      https://github.com/XX-J/Direct-links-out/raw/master/Direct links out.user.js
+// @icon        https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
 // @version     2.39
 // @grant       none
 //Google
