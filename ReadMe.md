@@ -11,9 +11,8 @@ __Install (Github raw):__ https://github.com/XX-J/Direct-links-out/raw/master/Di
 
 # Currently supported (with subdomains)
 - Google (with local versions)
-- yandex (with local versions)
 - 4PDA
-- AMO
+- Addons.Mozilla.Org
 - DanielDefo
 - DeviantArt
 - Disq.us
@@ -21,8 +20,8 @@ __Install (Github raw):__ https://github.com/XX-J/Direct-links-out/raw/master/Di
 - Facebook
 - Instagram
 - JoyReactor
-- Kickass
-- OK
+- Kickass (with mirrors)
+- Одноклассники
 - Picarto
 - Pixiv
 - Slack
@@ -33,28 +32,8 @@ __Install (Github raw):__ https://github.com/XX-J/Direct-links-out/raw/master/Di
 - Twitter
 - Upwork
 - USBDev
-- VKontakte
+- ВКонтакте
 - Wikimapia
-- Yandex
+- Yandex (with local versions)
 - YaPlakal
 - Youtube
-
-
-- soundcloud.com
-- deviantart.com
-- upwork.com
-- joyreactor.cc / joyreactor.com
-- steamcommunity.com
-- 4pda.ru
-- kat.cr(kickass torrents) (with mirrors)
-- addons.mozilla.org
-- pixiv.net
-- tumblr.com
-- danieldefo.ru
-- yaplakal.com
-- picarto.tv
-- taker.im
-- slack.com
-- forumavia.ru
-- instagram.com
-- wikimapia.org
