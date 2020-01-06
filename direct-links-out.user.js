@@ -2,18 +2,97 @@
 // @name        Direct links out
 // @name:ru     Прямые ссылки наружу
 // @description Removes all "You are leaving our site" and redirection stuff from links
-// @description:ru Убирает "Бла-бла-бла, Вы покидаете наш сайт" и переадресации из ссылок
-// @namespace   https://github.com/nokeya
-// @author      nokeya
-// @update      https://github.com/nokeya/direct-links-out/raw/master/direct-links-out.user.js
-// @icon        https://raw.githubusercontent.com/nokeya/direct-links-out/master/icon.png
-// @version     2.22
+// @description:ru Убирает "Бла-бла-бла, Вы покидаете наш сайт" и переадресацию из ссылок
+// @namespace   https://github.com/XX-J
+// @author      nokeya & XX-J...
+// @update      https://github.com/XX-J/direct-links-out/raw/master/direct-links-out.user.js
+// @icon        https://raw.githubusercontent.com/XX-J/direct-links-out/master/icon.png
+// @version     2.39
 // @grant       none
-//google
+//Google
 // @include     *://google.*
 // @include     *://www.google.*
 // @include     *://encrypted.google.*
-//yandex
+//4PDA
+// @match       *://4pda.ru/*
+// @match       *://*.4pda.ru/*
+//AMO
+// @match       *://addons.mozilla.org/*
+//DanielDefo
+// @match       *://danieldefo.ru/*
+// @match       *://*.danieldefo.ru/*
+//DeviantArt
+// @match       *://deviantart.com/*
+// @match       *://*.deviantart.com/*
+//Disq.us
+// @match       *://disq.us/*
+// @match       *://*.disq.us/*
+// @match       *://disqus.com/*
+// @match       *://*.disqus.com/*
+//ForumAvia
+// @match       *://*.forumavia.ru/*
+//FB
+// @match       *://facebook.com/*
+// @match       *://*.facebook.com/*
+// @match       *://messenger.com/*
+// @match       *://*.messenger.com/*
+//Instagram
+// @match       *://instagram.com/*
+// @match       *://*.instagram.com/*
+//JoyReactor
+// @match       *://joyreactor.cc/*
+// @match       *://*.joyreactor.cc/*
+// @match       *://reactor.cc/*
+// @match       *://*.reactor.cc/*
+// @match       *://joyreactor.com/*
+// @match       *://*.joyreactor.com/*
+//Kickass
+// @match       *://kat.cr/*
+// @match       *://kickassto.co/*
+// @match       *://katproxy.is/*
+// @match       *://thekat.tv/*
+// @match       *://*.kat.cr/*
+// @match       *://*.kickassto.co/*
+// @match       *://*.katproxy.is/*
+// @match       *://*.thekat.tv/*
+//OK
+// @match       *://ok.ru/*
+// @match       *://*.ok.ru/*
+//Picarto
+// @match       *://picarto.tv/*
+// @match       *://*.picarto.tv/*
+//Pixiv
+// @match       *://pixiv.net/*
+// @match       *://*.pixiv.net/*
+//Slack
+// @match       *://*.slack.com/*
+//SoundCloud
+// @match       *://soundcloud.com/*
+// @match       *://*.soundcloud.com/*
+//Steam
+// @match       *://steamcommunity.com/*
+// @match       *://*.steamcommunity.com/*
+//Taker
+// @match       *://taker.im/*
+// @match       *://*.taker.im/*
+//Tumblr
+// @match       *://tumblr.com/*
+// @match       *://*.tumblr.com/*
+//Twitter
+// @match       *://twitter.com/*
+// @match       *://*.twitter.com/*
+//Upwork
+// @match       *://upwork.com/*
+// @match       *://*.upwork.com/*
+//USBDev
+// @match       *://usbdev.ru/*
+// @match       *://*.usbdev.ru/*
+//VK
+// @match       *://vk.com/*
+// @match       *://*.vk.com/*
+//Wikimapia
+// @match       *://wikimapia.org/*
+//Yandex
 // @match       *://yandex.ru/*
 // @match       *://yandex.ua/*
 // @match       *://yandex.by/*
@@ -26,83 +105,12 @@
 // @match       *://*.yandex.kz/*
 // @match       *://*.yandex.com.tr/*
 // @match       *://*.yandex.com/*
-//youtube
-// @match       *://youtube.com/*
-// @match       *://*.youtube.com/*
-//wikimapia
-// @match       *://wikimapia.org/*
-//deviantart
-// @match       *://deviantart.com/*
-// @match       *://*.deviantart.com/*
-//joyreactor
-// @match       *://joyreactor.cc/*
-// @match       *://*.joyreactor.cc/*
-// @match       *://reactor.cc/*
-// @match       *://*.reactor.cc/*
-// @match       *://joyreactor.com/*
-// @match       *://*.joyreactor.com/*
-//vk
-// @match       *://vk.com/*
-// @match       *://*.vk.com/*
-//ok
-// @match       *://ok.ru/*
-// @match       *://*.ok.ru/*
-//steam
-// @match       *://steamcommunity.com/*
-// @match       *://*.steamcommunity.com/*
-//fb
-// @match       *://facebook.com/*
-// @match       *://*.facebook.com/*
-// @match       *://messenger.com/*
-// @match       *://*.messenger.com/*
-//twitter
-// @match       *://twitter.com/*
-// @match       *://*.twitter.com/*
-//4pda
-// @match       *://4pda.ru/*
-// @match       *://*.4pda.ru/*
-//kickass
-// @match       *://kat.cr/*
-// @match       *://kickassto.co/*
-// @match       *://katproxy.is/*
-// @match       *://thekat.tv/*
-// @match       *://*.kat.cr/*
-// @match       *://*.kickassto.co/*
-// @match       *://*.katproxy.is/*
-// @match       *://*.thekat.tv/*
-//AMO
-// @match       *://addons.mozilla.org/*
-//pixiv
-// @match       *://pixiv.net/*
-// @match       *://*.pixiv.net/*
-//tumblr
-// @match       *://tumblr.com/*
-// @match       *://*.tumblr.com/*
-//danieldefo
-// @match       *://danieldefo.ru/*
-// @match       *://*.danieldefo.ru/*
-//yaplakal
+//YaPlakal
 // @match       *://yaplakal.com/*
 // @match       *://*.yaplakal.com/*
-//soundcloud
-// @match       *://soundcloud.com/*
-// @match       *://*.soundcloud.com/*
-//upwork
-// @match       *://upwork.com/*
-// @match       *://*.upwork.com/*
-//picarto
-// @match       *://picarto.tv/*
-// @match       *://*.picarto.tv/*
-//taker
-// @match       *://taker.im/*
-// @match       *://*.taker.im/*
-//forumavia
-// @match       *://*.forumavia.ru/*
-//slack
-// @match       *://*.slack.com/*
-//instagram
-// @match       *://instagram.com/*
-// @match       *://*.instagram.com/*
+//Youtube
+// @match       *://youtube.com/*
+// @match       *://*.youtube.com/*
 
 // ==/UserScript==
 (function() {
@@ -113,6 +121,10 @@
     var rwAll = function(){};
     var retTrue = function() { return true; }; //dummy function to always return true
 
+    // Base64 Decoder (Not Work)
+    function B64Dec(str){
+        return decodeURIComponent(escape(window.atob(str)));
+    }
     // simple rewrite link -  based on anchors
     function rwSimple(link){
         if (anchor){
@@ -197,7 +209,6 @@
             delete window.rwt;
             Object.defineProperty(window, 'rwt', { value: retTrue, writable: false });
         }
-
         // main search
         if (link.hasAttribute('onmousedown'))
             link.removeAttribute('onmousedown');
@@ -208,7 +219,6 @@
             link.setAttribute('jsaction', tmp.replace(/(mousedown:irc.rl|keydown:irc.rlk)/g,''));
         }
     }
-
     // yandex
     function rwYandex(link){
         // main search
@@ -228,17 +238,20 @@
             setTimeout(function(){ link.href = unescape(tmp.replace(/(http|https):\/\/outgoing.prod.mozaws.net\/v1\/[0-9a-zA-Z]+\//i,'')); }, 100);
         }
     }
-
     // daniueldefo
     function rwDanielDefo(link){
         if (link.hasAttribute('data-proxy-href'))
             link.removeAttribute('data-proxy-href');
     }
-
     // slack
     function rwSlack(link){
         link.removeAttribute('onclick');
         link.removeAttribute('onmouseover');
+    }
+    // USBDev
+    function rwUSBDev(link){
+        anchor = '?url=';
+        rwSimple(link);
     }
 
     // determine anchors, functions and listeners
@@ -277,15 +290,17 @@
             anchor = 'st.link=';
             after = '&st.name=';
         }
-        else if (/pixiv/i.test(loc))
-            anchor = 'url=';
         else if (/tumblr/i.test(loc)){
             anchor = 'redirect?z=';
             after = '&t=';
         }
+        else if (/disq/i.test(loc)){
+            anchor = '?url=';
+            after = '&cuid=';
+        }
         else if (/deviantart/i.test(loc))
             anchor = 'outgoing?';
-        else if (/(steam|reactor)/i.test(loc))
+        else if (/(pixiv|reactor|steam)/i.test(loc))
             anchor = 'url=';
         else if (/(kat|kickass)/i.test(loc)){
             anchor = 'confirm/url/';
@@ -317,6 +332,8 @@
             anchor = 'phpBB2/goto/';
         else if (/slack/i.test(loc))
             rwLink = rwSlack;
+        else if (/usbdev/i.test(loc))
+            rwLink = B64Dec(rwUSBDev);
 
         document.addEventListener('DOMNodeInserted', function(event){
             if (!event || !event.target || !(event.target instanceof HTMLElement))
