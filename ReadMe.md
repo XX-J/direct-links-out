@@ -7,16 +7,39 @@ Userscript that removes all this "You are leaving our site" and other redirectio
 
 __Install (OpenUserJS):__ https://openuserjs.org/scripts/nokeya/Direct_links_out  
 __Install (GreasyFork):__ https://greasyfork.org/ru/scripts/15857-direct-links-out  
-__Install (Github raw):__ https://github.com/XX-J/Direct-links-out/raw/master/Direct links out.user.js
+__Install (Github raw):__ https://github.com/XX-J/Direct-links-out/raw/master/Direct%20links%20out.user.js
 
 # Currently supported (with subdomains)
-- google (with local versions)
+- Google (with local versions)
 - yandex (with local versions)
-- youtube.com
-- facebook.com
-- twitter.com
-- vk.com
-- ok.ru
+- 4PDA
+- AMO
+- DanielDefo
+- DeviantArt
+- Disq.us
+- ForumAvia
+- Facebook
+- Instagram
+- JoyReactor
+- Kickass
+- OK
+- Picarto
+- Pixiv
+- Slack
+- SoundCloud
+- Steam
+- Taker
+- Tumblr
+- Twitter
+- Upwork
+- USBDev
+- VKontakte
+- Wikimapia
+- Yandex
+- YaPlakal
+- Youtube
+
+
 - soundcloud.com
 - deviantart.com
 - upwork.com
