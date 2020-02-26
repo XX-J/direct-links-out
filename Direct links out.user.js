@@ -7,7 +7,7 @@
 // @author      nokeya & XX-J...
 // @update      https://github.com/XX-J/Direct-links-out/raw/master/Direct links out.user.js
 // @icon        https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
-// @version     2.39
+// @version     2.40
 // @grant       none
 //Google
 // @include     *://google.*
@@ -235,7 +235,10 @@
             var tmp = link.href;
             link.href = "#";
             // we have to fight mozilla's replacing of direct redirect string with jquery events
-            setTimeout(function(){ link.href = unescape(tmp.replace(/(http|https):\/\/outgoing.prod.mozaws.net\/v1\/[0-9a-zA-Z]+\//i,'')); }, 100);
+            setTimeout(function(){
+                tmp = decodeURIComponent(tmp.replace(/(http|https):\/\/outgoing.prod.mozaws.net\/v1\/[0-9a-zA-Z]+\//i,''));
+                link.href = tmp.replace(/(\?|&)utm_content=.*/i,'');
+            }, 100);
         }
     }
     // daniueldefo
