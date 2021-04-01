@@ -1,10 +1,10 @@
 # ![logo](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png) Direct links out
-Userscript that removes all this "You are leaving our site" and other redirection stuff from links.
+Userscript that removes all this "You are leaving our site..." and other redirection stuff from links.
 
 - Better anonymity
 - Faster surfing
 
-# Supported sites (with subdomains):
+# Supported sites:
 - 4PDA
 - Addons.Mozilla.Org
 - DanielDefo
@@ -12,7 +12,7 @@ Userscript that removes all this "You are leaving our site" and other redirectio
 - Disq.us
 - ForumAvia
 - Facebook
-- Google (with local versions)
+- Google
 - Instagram
 - JoyReactor
 - Kickass (with mirrors)
@@ -29,6 +29,6 @@ Userscript that removes all this "You are leaving our site" and other redirectio
 - USBDev
 - ВКонтакте
 - Wikimapia
-- Yandex (with local versions)
+- Yandex
 - YaPlakal
 - Youtube
