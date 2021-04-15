@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.43
+// @version         2.44
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -122,218 +122,166 @@
 // ==/UserScript==
 
 
-(function() {
+// anchors and functions
+var anchor, after, ndx, B64, rwLink, rwAll;
+rwLink = rwAll = function() {};
+var retTrue = function() { return true; };  // dummy function to always return true
 
-    // anchors and functions
-    var anchor, after, ndx, B64, rwLink, rwAll;
-    rwLink = rwAll = function() {};
-    var retTrue = function() { return true; };  // dummy function to always return true
-
-    // simple rewrite link -  based on anchors
-    function rwSimple(link) {
-        var newlink = decodeURIComponent(link.href);
-        if (anchor) {
-            ndx = newlink.search(anchor);
-            if (ndx != -1) {
-                newlink = newlink.substring(ndx + anchor.length); }
-        }
-        if (after) {
-            ndx = newlink.search(after);
-            if (ndx != -1) {
-                newlink = newlink.substring(0, ndx);
-            }
-        }
-        if (B64 && (ndx != -1)) {
-            newlink = decodeURIComponent(escape(window.atob(newlink)));
-            }
-        link.href = newlink;
+//   Simple rewrite link - based on anchors
+function rwSimple(link) {
+  if (link.hasAttribute('href') && !(link.getAttribute('href') == '')) {
+    var newlink = decodeURIComponent(link.href);
+    if (anchor) {
+      ndx = newlink.search(anchor);
+      if (ndx != -1) newlink = newlink.substring(ndx + anchor.length);
     }
-
-    function rwaSimple() {
-        var links = document.getElementsByTagName('a');
-        for (var i = 0; i < links.length; ++i) rwLink(links[i]); }
-
-    // DanielDefo
-    function rwDanielDefo(link) {
-        if (link.hasAttribute('data-proxy-href'))
-            link.removeAttribute('data-proxy-href');
+    if (after) {
+      ndx = newlink.search(after);
+      if (ndx != -1) newlink = newlink.substring(0, ndx);
     }
+    if (B64 && (ndx != -1)) newlink = decodeURIComponent(escape(window.atob(newlink)));
+    link.href = newlink;
+  }
+}
 
-    // Facebook
-    function rwFacebook(link) {
-        if (/referrer_log/i.test(link.onclick)){
-            link.removeAttribute('onclick');
-            link.removeAttribute('onmouseover'); }
-        rwSimple(link); }
+function rwaSimple() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; ++i) rwLink(links[i]);
+}
 
-    // Google
-    function rwGoogle(link) {
-        // replace global rwt script
-        if (window.rwt && window.rwt != retTrue) {
-            delete window.rwt;
-            Object.defineProperty(window, 'rwt', { value: retTrue, writable: false });
-        }
-        // main search
-        if (link.hasAttribute('onmousedown'))
-            link.removeAttribute('onmousedown');
-        // images
-        if (link.hasAttribute('jsaction')){
-           var tmp = link.getAttribute('jsaction');
-           if (tmp)
-            link.setAttribute('jsaction', tmp.replace(/(mousedown:irc.rl|keydown:irc.rlk)/g,''));
-        }
+
+//   DanielDefo
+function rwDanielDefo(link) {
+  if (link.hasAttribute('data-proxy-href')) link.removeAttribute('data-proxy-href');
+}
+
+//   Facebook
+function rwFacebook(link) {
+  if (/referrer_log/i.test(link.onclick)) {
+    link.removeAttribute('onclick');
+    link.removeAttribute('onmouseover');
+  }
+  rwSimple(link);
+}
+
+//   Google
+function rwGoogle(link) {
+  // replace global rwt script
+  if (window.rwt && window.rwt != retTrue) {
+    delete window.rwt;
+    Object.defineProperty(window, 'rwt', { value: retTrue, writable: false });
+  }
+  // main search
+  if (link.hasAttribute('onmousedown')) link.removeAttribute('onmousedown');
+  // images
+  if (link.hasAttribute('jsaction') && !(link.getAttribute('jsaction') == '')) link.setAttribute('jsaction', link.getAttribute('jsaction').replace(/(mousedown:irc.rl|keydown:irc.rlk)/g,''));
+}
+
+//   Kickass
+function rwKickass(link) {
+  var ndx = link.href.indexOf(anchor);
+  if (ndx != -1) {
+    link.href = window.atob(unescape(link.href.substring(ndx + anchor.length, link.href.length - 1)));
+    link.className = '';
+  }
+}
+
+//   Addons.Mozilla.Org
+function rwAMO(link) {
+  if (/outgoing.prod.mozaws.net/i.test(link.href)) {
+    var tmp = link.href;
+    link.href = "#";
+    // we have to fight mozilla's replacing of direct redirect string with jquery events
+    setTimeout(function() {
+      tmp = decodeURIComponent(tmp.replace(/(http|https):\/\/outgoing.prod.mozaws.net\/v1\/[0-9a-zA-Z]+\//i,''));
+      link.href = tmp.replace(/(\?|&)utm_content=.*/i,'');
+    }, 100);
+  }
+}
+
+//   Slack
+function rwSlack(link) {
+  if (link.hasAttribute('onclick')) link.removeAttribute('onclick');
+  if (link.hasAttribute('onmouseover')) link.removeAttribute('onmouseover');
+}
+
+//   Twitter
+function rwTwitter(link) {
+  if (link.hasAttribute('data-expanded-url') && !(link.getAttribute('data-expanded-url') == '')) {
+    link.href = link.getAttribute('data-expanded-url');
+    link.removeAttribute('data-expanded-url');
+  }
+}
+function rwaTwitter() {
+  var links = document.getElementsByClassName('twitter-timeline-link');
+  for (var i = 0; i < links.length; ++i) rwLink(links[i]);
+}
+
+//   ВКонтакте
+function rwVK(link) {
+  var parent = link.parentNode;
+  if ((link.className === 'page_media_link_thumb') && parent.hasAttribute('href') && !(parent.getAttribute('href') == '')) {
+    link.href = parent.getAttribute('href');
+    parent.removeAttribute('href');
+    parent.removeAttribute('onclick');
+    link.removeAttribute('onclick');
+  }
+
+  var ndx = link.href.indexOf(anchor);
+  if (ndx != -1) {
+    var newlink = link.href.substring(ndx + anchor.length);
+    var afterArr = ['&post=', '&el=snippet', '&cc_key='];
+    for (var i = 0; i < afterArr.length; ++i) {
+      ndx = newlink.indexOf(afterArr[i]);
+      if (ndx != -1) newlink = newlink.substring(0, ndx);
     }
+    link.href = unescape(newlink);
+  }
+}
 
-    // Kickass
-    function rwKickass(link) {
-        var ndx = link.href.indexOf(anchor);
-        if (ndx != -1) {
-            link.href = window.atob(unescape(link.href.substring(ndx + anchor.length, link.href.length - 1)));
-            link.className = '';
-        }
-    }
+//   Яндекс
+function rwYandex(link) {
+  // main search
+  if (link.hasAttribute('data-counter')) link.removeAttribute('data-counter');
+  // images
+  anchor = '&img_url='; after = '&pos=';
+  rwSimple(link);
+}
 
-    // Addons.Mozilla.Org
-    function rwAMO(link) {
-        if (/outgoing.prod.mozaws.net/i.test(link.href)) {
-            var tmp = link.href;
-            link.href = "#";
-            // we have to fight mozilla's replacing of direct redirect string with jquery events
-            setTimeout(function(){
-                tmp = decodeURIComponent(tmp.replace(/(http|https):\/\/outgoing.prod.mozaws.net\/v1\/[0-9a-zA-Z]+\//i,''));
-                link.href = tmp.replace(/(\?|&)utm_content=.*/i,'');
-            }, 100);
-        }
-    }
+// determine anchors, functions and listeners
+rwLink = rwSimple;
+rwAll = rwaSimple;
+var loc = window.location.hostname;
 
-    // Slack
-    function rwSlack(link) {
-        if (link.hasAttribute('onclick'))
-            link.removeAttribute('onclick');
-        if (link.hasAttribute('onmouseover'))
-            link.removeAttribute('onmouseover');
-    }
+if (/(4pda|instagram)/i.test(loc)) { anchor = 'u='; after = '&e='; }
+else if (/danieldefo/i.test(loc)) rwLink = rwDanielDefo;
+else if (/deviantart/i.test(loc)) anchor = 'outgoing?';
+else if (/disq/i.test(loc)) { anchor = 'url='; after = /:([A-Za-z0-9]+)/; }
+else if (/(facebook|messenger)/i.test(loc)) { anchor = 'u='; after = '&h='; rwLink = rwFacebook; }
+else if (/forumavia/i.test(loc)) anchor = '/e/?l=';
+else if (/google/i.test(loc)) rwLink = rwGoogle;
+else if (/(kat|kickass)/i.test(loc)) { anchor = 'confirm/url/'; rwLink = rwKickass; }
+else if (/(lrepacks|repack|rsload|usbdev)/i.test(loc)) { anchor = 'url='; B64 = 1; }
+else if (/mozilla/i.test(loc)) rwLink = rwAMO;
+else if (/ok/i.test(loc)) { anchor = 'st.link='; after = '&st.name='; }
+else if (/picarto/i.test(loc)) { anchor = 'referrer?go='; after = '&ref='; }
+else if (/(pixiv|reactor|soundcloud|steam|wikimapia)/i.test(loc)) anchor = 'url=';
+else if (/slack/i.test(loc)) rwLink = rwSlack;
+else if (/taker/i.test(loc)) anchor = 'phpBB2/goto/';
+else if (/tumblr/i.test(loc)) { anchor = 'redirect?z='; after = '&t='; }
+else if (/twitter/i.test(loc)) { rwLink = rwTwitter; rwAll = rwaTwitter; }
+else if (/upwork/i.test(loc)) anchor = 'leaving-odesk?ref=';
+else if (/vk/i.test(loc)) { anchor = 'to='; rwLink = rwVK; }
+else if (/yandex/i.test(loc)) rwLink = rwYandex;
+else if (/yaplakal/i.test(loc)) anchor = 'go/?';
+else if (/youtube/i.test(loc)) { anchor = 'q='; after = /&(redir_token|event|v)=/; }
 
-    // Twitter
-    function rwTwitter(link) {
-        if (link.hasAttribute('data-expanded-url')) {
-            link.href = link.getAttribute('data-expanded-url');
-            link.removeAttribute('data-expanded-url');
-        }
-    }
-    function rwaTwitter() {
-        var links = document.getElementsByClassName('twitter-timeline-link');
-        for (var i = 0; i < links.length; ++i)
-            rwLink(links[i]);
-    }
+document.addEventListener('DOMNodeInserted', function(event) {
+  if (!event || !event.target || !(event.target instanceof HTMLElement)) return;
+  var node = event.target;
+  if (node instanceof HTMLAnchorElement) rwLink(node);
+  var links = node.getElementsByTagName('a');
+  for (var i = 0; i < links.length; ++i) rwLink(links[i]);
+}, false);
 
-    // VK
-    function rwVK(link) {
-        if (link.className === 'page_media_link_thumb') {
-            var parent = link.parentNode;
-            link.href = parent.getAttribute("href");
-            parent.removeAttribute('href');
-            parent.removeAttribute('onclick');
-            link.removeAttribute('onclick'); }
-
-        var ndx = link.href.indexOf(anchor);
-        if (ndx != -1) {
-            var newlink = link.href.substring(ndx + anchor.length);
-            var afterArr = ['&post=', '&el=snippet', '&cc_key='];
-            for (var i = 0; i < afterArr.length; ++i) {
-                ndx = newlink.indexOf(afterArr[i]);
-                if (ndx != -1) newlink = newlink.substring(0, ndx); }
-            link.href = unescape(newlink); }
-    }
-
-    // Yandex
-    function rwYandex(link) {
-        // main search
-        if (link.hasAttribute('data-counter'))
-            link.removeAttribute('data-counter');
-        // images
-        anchor = '&img_url=';
-        after = '&pos=';
-        rwSimple(link); }
-
-    // determine anchors, functions and listeners
-    (function () {
-
-        rwLink = rwSimple;
-        rwAll = rwaSimple;
-        var loc = window.location.hostname;
-
-        if (/google/i.test(loc))
-            rwLink = rwGoogle;
-        else if (/youtube/i.test(loc)) {
-            anchor = 'q=';
-            after = /&(redir_token|event|v)=/;
-        }
-        else if (/(facebook|messenger)/i.test(loc)) {
-            anchor = 'u=';
-            after = '&h=';
-            rwLink = rwFacebook; }
-        else if (/instagram/i.test(loc)) {
-            anchor = 'u=';
-            after = '&e='; }
-        else if (/twitter/i.test(loc)) {
-            rwLink = rwTwitter;
-            rwAll = rwaTwitter; }
-        else if (/yandex/i.test(loc))
-            rwLink = rwYandex;
-        else if (/vk/i.test(loc)) {
-            anchor = 'to=';
-            rwLink = rwVK; }
-        else if (/ok/i.test(loc)) {
-            anchor = 'st.link=';
-            after = '&st.name='; }
-        else if (/tumblr/i.test(loc)) {
-            anchor = 'redirect?z=';
-            after = '&t='; }
-        else if (/disq/i.test(loc)) {
-            anchor = 'url=';
-            after = /:([A-Za-z0-9]+)/; }
-        else if (/deviantart/i.test(loc))
-            anchor = 'outgoing?';
-        else if (/(pixiv|reactor|soundcloud|steam|wikimapia)/i.test(loc))
-            anchor = 'url=';
-        else if (/(kat|kickass)/i.test(loc)) {
-            anchor = 'confirm/url/';
-            rwLink = rwKickass; }
-        else if (/upwork/i.test(loc))
-            anchor = 'leaving-odesk?ref=';
-        else if (/4pda/i.test(loc)) {
-            anchor = 'go/?u=';
-            after = '&e='; }
-        else if (/mozilla/i.test(loc))
-            rwLink = rwAMO;
-        else if (/danieldefo/i.test(loc))
-            rwLink = rwDanielDefo;
-        else if (/yaplakal/i.test(loc))
-            anchor = 'go/?';
-        else if (/forumavia/i.test(loc))
-            anchor = '/e/?l=';
-        else if (/picarto/i.test(loc)) {
-            anchor = 'referrer?go=';
-            after = '&ref='; }
-        else if (/taker/i.test(loc))
-            anchor = 'phpBB2/goto/';
-        else if (/slack/i.test(loc))
-            rwLink = rwSlack;
-        else if (/(lrepacks|repack|rsload|usbdev)/i.test(loc)) {
-            anchor = 'url=';
-            B64 = 1; }
-
-        document.addEventListener('DOMNodeInserted', function(event) {
-            if (!event || !event.target || !(event.target instanceof HTMLElement))
-                return;
-            var node = event.target;
-            if (node instanceof HTMLAnchorElement)
-                rwLink(node);
-            var links = node.getElementsByTagName('a');
-            for (var i = 0; i < links.length; ++i)
-                rwLink(links[i]);
-        }, false);
-    })();
-    rwAll();
-})();
+rwAll();
