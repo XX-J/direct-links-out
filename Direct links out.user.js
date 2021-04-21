@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.44
+// @version         2.46
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -123,25 +123,22 @@
 
 
 // anchors and functions
-var anchor, after, ndx, B64, rwLink, rwAll;
-rwLink = rwAll = function() {};
+var anchor;  // string
+var after;  // string or regexp
+var B64, remAttr;
 var retTrue = function() { return true; };  // dummy function to always return true
 
 //   Simple rewrite link - based on anchors
 function rwSimple(link) {
-  if (link.hasAttribute('href') && !(link.getAttribute('href') == '')) {
-    var newlink = decodeURIComponent(link.href);
-    if (anchor) {
-      ndx = newlink.search(anchor);
-      if (ndx != -1) newlink = newlink.substring(ndx + anchor.length);
+  if (!!link.getAttribute('href')) {
+    link.href = decodeURIComponent(link.href);
+    if (link.href.search(anchor) > 0) {
+      link.href = link.href.substring(link.href.search(anchor) + anchor.length);
+      if (B64) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
     }
-    if (after) {
-      ndx = newlink.search(after);
-      if (ndx != -1) newlink = newlink.substring(0, ndx);
-    }
-    if (B64 && (ndx != -1)) newlink = decodeURIComponent(escape(window.atob(newlink)));
-    link.href = newlink;
+    if (link.href.search(after) > 0) link.href = link.href.substring(0, link.href.search(after));
   }
+  if (link.hasAttribute(remAttr)) link.removeAttribute(remAttr);
 }
 
 function rwaSimple() {
@@ -149,11 +146,6 @@ function rwaSimple() {
   for (var i = 0; i < links.length; ++i) rwLink(links[i]);
 }
 
-
-//   DanielDefo
-function rwDanielDefo(link) {
-  if (link.hasAttribute('data-proxy-href')) link.removeAttribute('data-proxy-href');
-}
 
 //   Facebook
 function rwFacebook(link) {
@@ -241,40 +233,37 @@ function rwVK(link) {
 
 //   Яндекс
 function rwYandex(link) {
-  // main search
   if (link.hasAttribute('data-counter')) link.removeAttribute('data-counter');
-  // images
-  anchor = '&img_url='; after = '&pos=';
   rwSimple(link);
 }
 
-// determine anchors, functions and listeners
-rwLink = rwSimple;
-rwAll = rwaSimple;
-var loc = window.location.hostname;
 
-if (/(4pda|instagram)/i.test(loc)) { anchor = 'u='; after = '&e='; }
-else if (/danieldefo/i.test(loc)) rwLink = rwDanielDefo;
-else if (/deviantart/i.test(loc)) anchor = 'outgoing?';
-else if (/disq/i.test(loc)) { anchor = 'url='; after = /:([A-Za-z0-9]+)/; }
-else if (/(facebook|messenger)/i.test(loc)) { anchor = 'u='; after = '&h='; rwLink = rwFacebook; }
-else if (/forumavia/i.test(loc)) anchor = '/e/?l=';
-else if (/google/i.test(loc)) rwLink = rwGoogle;
-else if (/(kat|kickass)/i.test(loc)) { anchor = 'confirm/url/'; rwLink = rwKickass; }
-else if (/(lrepacks|repack|rsload|usbdev)/i.test(loc)) { anchor = 'url='; B64 = 1; }
-else if (/mozilla/i.test(loc)) rwLink = rwAMO;
-else if (/ok/i.test(loc)) { anchor = 'st.link='; after = '&st.name='; }
-else if (/picarto/i.test(loc)) { anchor = 'referrer?go='; after = '&ref='; }
-else if (/(pixiv|reactor|soundcloud|steam|wikimapia)/i.test(loc)) anchor = 'url=';
-else if (/slack/i.test(loc)) rwLink = rwSlack;
-else if (/taker/i.test(loc)) anchor = 'phpBB2/goto/';
-else if (/tumblr/i.test(loc)) { anchor = 'redirect?z='; after = '&t='; }
-else if (/twitter/i.test(loc)) { rwLink = rwTwitter; rwAll = rwaTwitter; }
-else if (/upwork/i.test(loc)) anchor = 'leaving-odesk?ref=';
-else if (/vk/i.test(loc)) { anchor = 'to='; rwLink = rwVK; }
-else if (/yandex/i.test(loc)) rwLink = rwYandex;
-else if (/yaplakal/i.test(loc)) anchor = 'go/?';
-else if (/youtube/i.test(loc)) { anchor = 'q='; after = /&(redir_token|event|v)=/; }
+// determine anchors, functions and listeners
+var rwLink = rwSimple, rwAll = rwaSimple;
+var HostName = window.location.hostname;
+
+if (/(4pda|instagram)/i.test(HostName)) { anchor = 'u='; after = '&e='; }
+else if (/danieldefo/i.test(HostName)) remAttr = 'data-proxy-href';
+else if (/deviantart/i.test(HostName)) anchor = 'outgoing?';
+else if (/disq/i.test(HostName)) { anchor = 'url='; after = /:([A-Za-z0-9]+)/; }
+else if (/(facebook|messenger)/i.test(HostName)) { anchor = 'u='; after = '&h='; rwLink = rwFacebook; }
+else if (/forumavia/i.test(HostName)) anchor = '/e/?l=';
+else if (/google/i.test(HostName)) rwLink = rwGoogle;
+else if (/(kat|kickass)/i.test(HostName)) { anchor = 'confirm/url/'; rwLink = rwKickass; }
+else if (/(lrepacks|repack|rsload|usbdev)/i.test(HostName)) { anchor = 'url='; B64 = 1; }
+else if (/mozilla/i.test(HostName)) rwLink = rwAMO;
+else if (/ok/i.test(HostName)) { anchor = 'st.link='; after = '&st.name='; }
+else if (/picarto/i.test(HostName)) { anchor = 'referrer?go='; after = '&ref='; }
+else if (/(pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) anchor = 'url=';
+else if (/slack/i.test(HostName)) rwLink = rwSlack;
+else if (/taker/i.test(HostName)) anchor = 'phpBB2/goto/';
+else if (/tumblr/i.test(HostName)) { anchor = 'redirect?z='; after = '&t='; }
+else if (/twitter/i.test(HostName)) { rwLink = rwTwitter; rwAll = rwaTwitter; }
+else if (/upwork/i.test(HostName)) anchor = 'leaving-odesk?ref=';
+else if (/vk/i.test(HostName)) { anchor = 'to='; rwLink = rwVK; }
+else if (/yandex/i.test(HostName)) { anchor = '&img_url='; after = '&pos='; remAttr = 'data-counter'; } // rwLink = rwYandex;
+else if (/yaplakal/i.test(HostName)) anchor = 'go/?';
+else if (/youtube/i.test(HostName)) { anchor = 'q='; after = /&(redir_token|event|v)=/; }
 
 document.addEventListener('DOMNodeInserted', function(event) {
   if (!event || !event.target || !(event.target instanceof HTMLElement)) return;
