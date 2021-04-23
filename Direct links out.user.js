@@ -2,123 +2,113 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.46
+// @version         2.47
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
 // @update          https://github.com/XX-J/Direct-links-out/raw/master/Direct links out.user.js
 // @author          nokeya & XX-J...
 //   4PDA
-// @match           *://4pda.ru/*
-// @match           *://*.4pda.ru/*
+// @include         *://4pda.ru/*
+// @include         *://*.4pda.ru/*
 //   DanielDefo
-// @match           *://danieldefo.ru/*
-// @match           *://*.danieldefo.ru/*
+// @include         *://danieldefo.ru/*
+// @include         *://*.danieldefo.ru/*
 //   DeviantArt
-// @match           *://deviantart.com/*
-// @match           *://*.deviantart.com/*
+// @include         *://deviantart.com/*
+// @include         *://*.deviantart.com/*
 //   Disq.us
-// @match           *://disq.us/*
-// @match           *://*.disq.us/*
-// @match           *://disqus.com/*
-// @match           *://*.disqus.com/*
+// @include         *://disq.us/*
+// @include         *://*.disq.us/*
+// @include         *://disqus.com/*
+// @include         *://*.disqus.com/*
 //   Facebook
-// @match           *://facebook.com/*
-// @match           *://*.facebook.com/*
-// @match           *://messenger.com/*
-// @match           *://*.messenger.com/*
+// @include         *://facebook.com/*
+// @include         *://*.facebook.com/*
+// @include         *://messenger.com/*
+// @include         *://*.messenger.com/*
 //   ForumAvia
-// @match           *://*.forumavia.ru/*
+// @include         *://*.forumavia.ru/*
 //   Google
 // @include         *://google.*
 // @include         *://www.google.*
 // @include         *://encrypted.google.*
 //   Instagram
-// @match           *://instagram.com/*
-// @match           *://*.instagram.com/*
+// @include         *://instagram.com/*
+// @include         *://*.instagram.com/*
 //   JoyReactor
-// @match           *://joyreactor.cc/*
-// @match           *://*.joyreactor.cc/*
-// @match           *://reactor.cc/*
-// @match           *://*.reactor.cc/*
-// @match           *://joyreactor.com/*
-// @match           *://*.joyreactor.com/*
+// @include         *://joyreactor.cc/*
+// @include         *://*.joyreactor.cc/*
+// @include         *://reactor.cc/*
+// @include         *://*.reactor.cc/*
+// @include         *://joyreactor.com/*
+// @include         *://*.joyreactor.com/*
 //   Kickass
-// @match           *://kat.cr/*
-// @match           *://kickassto.co/*
-// @match           *://katproxy.is/*
-// @match           *://thekat.tv/*
-// @match           *://*.kat.cr/*
-// @match           *://*.kickassto.co/*
-// @match           *://*.katproxy.is/*
-// @match           *://*.thekat.tv/*
+// @include         *://kat.cr/*
+// @include         *://*.kat.cr/*
+// @include         *://katproxy.is/*
+// @include         *://*.katproxy.is/*
+// @include         *://kickassto.co/*
+// @include         *://*.kickassto.co/*
+// @include         *://thekat.tv/*
+// @include         *://*.thekat.tv/*
 //   LRepacks
-// @match           *://lrepacks.ru/*
-// @match           *://*.lrepacks.ru/*
+// @include         *://lrepacks.*
+// @include         *://*.lrepacks.*
 //   Addons.Mozilla.Org
-// @match           *://addons.mozilla.org/*
+// @include         *://addons.mozilla.org/*
 //   Одноклассники
-// @match           *://ok.ru/*
-// @match           *://*.ok.ru/*
+// @include         *://ok.ru/*
+// @include         *://*.ok.ru/*
 //   Picarto
-// @match           *://picarto.tv/*
-// @match           *://*.picarto.tv/*
+// @include         *://picarto.tv/*
+// @include         *://*.picarto.tv/*
 //   Pixiv
-// @match           *://pixiv.net/*
-// @match           *://*.pixiv.net/*
+// @include         *://pixiv.net/*
+// @include         *://*.pixiv.net/*
 //   Repack.me
-// @match           *://repack.me/*
-// @match           *://*.repack.me/*
+// @include         *://repack.me/*
+// @include         *://*.repack.me/*
 //   RsLoad
-// @match           *://rsload.net/*
-// @match           *://*.rsload.net/*
+// @include         *://rsload.net/*
+// @include         *://*.rsload.net/*
 //   Slack
-// @match           *://*.slack.com/*
+// @include         *://*.slack.com/*
 //   SoundCloud
-// @match           *://soundcloud.com/*
-// @match           *://*.soundcloud.com/*
+// @include         *://soundcloud.com/*
+// @include         *://*.soundcloud.com/*
 //   Steam
-// @match           *://steamcommunity.com/*
-// @match           *://*.steamcommunity.com/*
+// @include         *://steamcommunity.com/*
+// @include         *://*.steamcommunity.com/*
 //   Taker
-// @match           *://taker.im/*
-// @match           *://*.taker.im/*
+// @include         *://taker.im/*
+// @include         *://*.taker.im/*
 //   Tumblr
-// @match           *://tumblr.com/*
-// @match           *://*.tumblr.com/*
+// @include         *://tumblr.com/*
+// @include         *://*.tumblr.com/*
 //   Twitter
-// @match           *://twitter.com/*
-// @match           *://*.twitter.com/*
+// @include         *://twitter.com/*
+// @include         *://*.twitter.com/*
 //   Upwork
-// @match           *://upwork.com/*
-// @match           *://*.upwork.com/*
+// @include         *://upwork.com/*
+// @include         *://*.upwork.com/*
 //   USBDev
-// @match           *://usbdev.ru/*
-// @match           *://*.usbdev.ru/*
+// @include         *://usbdev.ru/*
+// @include         *://*.usbdev.ru/*
 //   ВКонтакте
-// @match           *://vk.com/*
-// @match           *://*.vk.com/*
+// @include         *://vk.com/*
+// @include         *://*.vk.com/*
 //   Wikimapia
-// @match           *://wikimapia.org/*
+// @include         *://wikimapia.org/*
 //   Яндекс
-// @match           *://yandex.ru/*
-// @match           *://yandex.ua/*
-// @match           *://yandex.by/*
-// @match           *://yandex.kz/*
-// @match           *://yandex.com.tr/*
-// @match           *://yandex.com/*
-// @match           *://*.yandex.ru/*
-// @match           *://*.yandex.ua/*
-// @match           *://*.yandex.by/*
-// @match           *://*.yandex.kz/*
-// @match           *://*.yandex.com.tr/*
-// @match           *://*.yandex.com/*
+// @include         *://yandex.*
+// @include         *://*.yandex.*
 //   ЯПлакалъ
-// @match           *://yaplakal.com/*
-// @match           *://*.yaplakal.com/*
+// @include         *://yaplakal.com/*
+// @include         *://*.yaplakal.com/*
 //   YouTube
-// @match           *://youtube.com/*
-// @match           *://*.youtube.com/*
+// @include         *://youtube.com/*
+// @include         *://*.youtube.com/*
 // ==/UserScript==
 
 
@@ -232,10 +222,10 @@ function rwVK(link) {
 }
 
 //   Яндекс
-function rwYandex(link) {
-  if (link.hasAttribute('data-counter')) link.removeAttribute('data-counter');
-  rwSimple(link);
-}
+//function rwYandex(link) {
+//  if (link.hasAttribute('data-counter')) link.removeAttribute('data-counter');
+//  rwSimple(link);
+//}
 
 
 // determine anchors, functions and listeners
@@ -261,7 +251,7 @@ else if (/tumblr/i.test(HostName)) { anchor = 'redirect?z='; after = '&t='; }
 else if (/twitter/i.test(HostName)) { rwLink = rwTwitter; rwAll = rwaTwitter; }
 else if (/upwork/i.test(HostName)) anchor = 'leaving-odesk?ref=';
 else if (/vk/i.test(HostName)) { anchor = 'to='; rwLink = rwVK; }
-else if (/yandex/i.test(HostName)) { anchor = '&img_url='; after = '&pos='; remAttr = 'data-counter'; } // rwLink = rwYandex;
+else if (/yandex/i.test(HostName)) { anchor = '&img_url='; after = '&pos='; } // remAttr = 'data-counter'; rwLink = rwYandex;
 else if (/yaplakal/i.test(HostName)) anchor = 'go/?';
 else if (/youtube/i.test(HostName)) { anchor = 'q='; after = /&(redir_token|event|v)=/; }
 
