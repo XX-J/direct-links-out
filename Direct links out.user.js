@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.47
+// @version         2.56
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -44,14 +44,12 @@
 // @include         *://joyreactor.com/*
 // @include         *://*.joyreactor.com/*
 //   Kickass
-// @include         *://kat.cr/*
-// @include         *://*.kat.cr/*
-// @include         *://katproxy.is/*
-// @include         *://*.katproxy.is/*
+// @include         *://kickasstorrents.pw/*
+// @include         *://*.kickasstorrents.pw/*
 // @include         *://kickassto.co/*
 // @include         *://*.kickassto.co/*
-// @include         *://thekat.tv/*
-// @include         *://*.thekat.tv/*
+// @include         *://katproxy.is/*
+// @include         *://*.katproxy.is/*
 //   LRepacks
 // @include         *://lrepacks.*
 // @include         *://*.lrepacks.*
@@ -60,18 +58,27 @@
 //   Одноклассники
 // @include         *://ok.ru/*
 // @include         *://*.ok.ru/*
+//   OSzone
+// @include         *://oszone.net/*
+// @include         *://*.oszone.net/*
 //   Picarto
 // @include         *://picarto.tv/*
 // @include         *://*.picarto.tv/*
 //   Pixiv
 // @include         *://pixiv.net/*
 // @include         *://*.pixiv.net/*
+//   PlayGround
+// @include         *://playground.ru/*
+// @include         *://*.playground.ru/*
 //   Repack.me
 // @include         *://repack.me/*
 // @include         *://*.repack.me/*
 //   RsLoad
 // @include         *://rsload.net/*
 // @include         *://*.rsload.net/*
+//   Rubattle.net
+// @include         *://rubattle.net/*
+// @include         *://*.rubattle.net/*
 //   Slack
 // @include         *://*.slack.com/*
 //   SoundCloud
@@ -112,23 +119,22 @@
 // ==/UserScript==
 
 
-// anchors and functions
-var anchor;  // string
-var after;  // string or regexp
-var B64, remAttr;
+var anchor, repAnchor = '', after;
+var remClases, B64, remAttrs;
 var retTrue = function() { return true; };  // dummy function to always return true
 
-//   Simple rewrite link - based on anchors
+//   Simple rewrite link
 function rwSimple(link) {
   if (!!link.getAttribute('href')) {
     link.href = decodeURIComponent(link.href);
-    if (link.href.search(anchor) > 0) {
-      link.href = link.href.substring(link.href.search(anchor) + anchor.length);
+    if (anchor && (link.href.search(anchor) != -1)) {
+      if (remClases) link.removeAttribute('class');
+      link.href = link.href.replace(anchor, repAnchor);
       if (B64) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
     }
     if (link.href.search(after) > 0) link.href = link.href.substring(0, link.href.search(after));
   }
-  if (link.hasAttribute(remAttr)) link.removeAttribute(remAttr);
+  if (remAttrs) for (var i = 0; i < remAttrs.length; ++i) link.removeAttribute(remAttrs[i]);
 }
 
 function rwaSimple() {
@@ -159,34 +165,6 @@ function rwGoogle(link) {
   if (link.hasAttribute('jsaction') && !(link.getAttribute('jsaction') == '')) link.setAttribute('jsaction', link.getAttribute('jsaction').replace(/(mousedown:irc.rl|keydown:irc.rlk)/g,''));
 }
 
-//   Kickass
-function rwKickass(link) {
-  var ndx = link.href.indexOf(anchor);
-  if (ndx != -1) {
-    link.href = window.atob(unescape(link.href.substring(ndx + anchor.length, link.href.length - 1)));
-    link.className = '';
-  }
-}
-
-//   Addons.Mozilla.Org
-function rwAMO(link) {
-  if (/outgoing.prod.mozaws.net/i.test(link.href)) {
-    var tmp = link.href;
-    link.href = "#";
-    // we have to fight mozilla's replacing of direct redirect string with jquery events
-    setTimeout(function() {
-      tmp = decodeURIComponent(tmp.replace(/(http|https):\/\/outgoing.prod.mozaws.net\/v1\/[0-9a-zA-Z]+\//i,''));
-      link.href = tmp.replace(/(\?|&)utm_content=.*/i,'');
-    }, 100);
-  }
-}
-
-//   Slack
-function rwSlack(link) {
-  if (link.hasAttribute('onclick')) link.removeAttribute('onclick');
-  if (link.hasAttribute('onmouseover')) link.removeAttribute('onmouseover');
-}
-
 //   Twitter
 function rwTwitter(link) {
   if (link.hasAttribute('data-expanded-url') && !(link.getAttribute('data-expanded-url') == '')) {
@@ -199,61 +177,34 @@ function rwaTwitter() {
   for (var i = 0; i < links.length; ++i) rwLink(links[i]);
 }
 
-//   ВКонтакте
-function rwVK(link) {
-  var parent = link.parentNode;
-  if ((link.className === 'page_media_link_thumb') && parent.hasAttribute('href') && !(parent.getAttribute('href') == '')) {
-    link.href = parent.getAttribute('href');
-    parent.removeAttribute('href');
-    parent.removeAttribute('onclick');
-    link.removeAttribute('onclick');
-  }
-
-  var ndx = link.href.indexOf(anchor);
-  if (ndx != -1) {
-    var newlink = link.href.substring(ndx + anchor.length);
-    var afterArr = ['&post=', '&el=snippet', '&cc_key='];
-    for (var i = 0; i < afterArr.length; ++i) {
-      ndx = newlink.indexOf(afterArr[i]);
-      if (ndx != -1) newlink = newlink.substring(0, ndx);
-    }
-    link.href = unescape(newlink);
-  }
-}
-
-//   Яндекс
-//function rwYandex(link) {
-//  if (link.hasAttribute('data-counter')) link.removeAttribute('data-counter');
-//  rwSimple(link);
-//}
-
 
 // determine anchors, functions and listeners
 var rwLink = rwSimple, rwAll = rwaSimple;
 var HostName = window.location.hostname;
 
-if (/(4pda|instagram)/i.test(HostName)) { anchor = 'u='; after = '&e='; }
-else if (/danieldefo/i.test(HostName)) remAttr = 'data-proxy-href';
-else if (/deviantart/i.test(HostName)) anchor = 'outgoing?';
-else if (/disq/i.test(HostName)) { anchor = 'url='; after = /:([A-Za-z0-9]+)/; }
-else if (/(facebook|messenger)/i.test(HostName)) { anchor = 'u='; after = '&h='; rwLink = rwFacebook; }
-else if (/forumavia/i.test(HostName)) anchor = '/e/?l=';
+if (/(4pda|instagram)/i.test(HostName)) { anchor = /.+u=/i; after = '&e='; }
+else if (/danieldefo/i.test(HostName)) remAttrs = ['data-proxy-href'];
+else if (/deviantart/i.test(HostName)) anchor = /.+outgoing\?/i;
+else if (/disq/i.test(HostName)) { anchor = /.+url=/i; after = /:[0-9a-zA-Z]+/; }
+else if (/(facebook|messenger)/i.test(HostName)) { anchor = /.+u=/i; after = '&h='; rwLink = rwFacebook; }
+else if (/forumavia/i.test(HostName)) anchor = /.+\/e\/\?l=/i;
 else if (/google/i.test(HostName)) rwLink = rwGoogle;
-else if (/(kat|kickass)/i.test(HostName)) { anchor = 'confirm/url/'; rwLink = rwKickass; }
-else if (/(lrepacks|repack|rsload|usbdev)/i.test(HostName)) { anchor = 'url='; B64 = 1; }
-else if (/mozilla/i.test(HostName)) rwLink = rwAMO;
-else if (/ok/i.test(HostName)) { anchor = 'st.link='; after = '&st.name='; }
-else if (/picarto/i.test(HostName)) { anchor = 'referrer?go='; after = '&ref='; }
-else if (/(pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) anchor = 'url=';
-else if (/slack/i.test(HostName)) rwLink = rwSlack;
-else if (/taker/i.test(HostName)) anchor = 'phpBB2/goto/';
-else if (/tumblr/i.test(HostName)) { anchor = 'redirect?z='; after = '&t='; }
+else if (/(kat|kickass)/i.test(HostName)) { anchor = /.+confirm\/url\//i; remClases = 1; B64 = 1; }
+else if (/(repack|rsload|usbdev)/i.test(HostName)) { anchor = /.+url=/i; B64 = 1; }
+else if (/mozilla/i.test(HostName)) { anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; after = /(\?|&)utm_content=/i; }
+else if (/ok/i.test(HostName)) { anchor = /.+st\.link=/i; after = '&st.name='; }
+else if (/(oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) anchor = /.+url=/i;
+else if (/picarto/i.test(HostName)) { anchor = /.+referrer\?go=/i; after = '&ref='; }
+else if (/(playground|rubattle)/i.test(HostName)) anchor = /www\.[0-9a-zA-Z]+\.(net|ru)\/redirect\/(https\/|http\/|)/i;
+else if (/slack/i.test(HostName)) remAttrs = ['onclick', 'onmouseover'];
+else if (/taker/i.test(HostName)) anchor = /.+phpBB2\/goto\//i;
+else if (/tumblr/i.test(HostName)) { anchor = /.+redirect\?z=/i; after = '&t='; }
 else if (/twitter/i.test(HostName)) { rwLink = rwTwitter; rwAll = rwaTwitter; }
-else if (/upwork/i.test(HostName)) anchor = 'leaving-odesk?ref=';
-else if (/vk/i.test(HostName)) { anchor = 'to='; rwLink = rwVK; }
-else if (/yandex/i.test(HostName)) { anchor = '&img_url='; after = '&pos='; } // remAttr = 'data-counter'; rwLink = rwYandex;
-else if (/yaplakal/i.test(HostName)) anchor = 'go/?';
-else if (/youtube/i.test(HostName)) { anchor = 'q='; after = /&(redir_token|event|v)=/; }
+else if (/upwork/i.test(HostName)) anchor = /.+leaving-odesk\?ref=/i;
+else if (/vk/i.test(HostName)) { anchor = /.+to=/i; after = '&cc_key='; }
+else if (/yandex/i.test(HostName)) { anchor = /.+&img_url=/i; after = '&pos='; remAttrs = ['data-counter']; }
+else if (/yaplakal/i.test(HostName)) anchor = /.+go\/\?/i;
+else if (/youtube/i.test(HostName)) { anchor = /.+q=/i; after = /&(redir_token|event|v)=/; }
 
 document.addEventListener('DOMNodeInserted', function(event) {
   if (!event || !event.target || !(event.target instanceof HTMLElement)) return;
