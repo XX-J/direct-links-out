@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.57
+// @version         2.58
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -186,7 +186,7 @@ if (/(4pda|instagram)/i.test(HostName)) { anchor = /.+u=/i; after = '&e='; }
 else if (/danieldefo/i.test(HostName)) remAttrs = ['data-proxy-href'];
 else if (/deviantart/i.test(HostName)) anchor = /.+outgoing\?/i;
 else if (/disq/i.test(HostName)) { anchor = /.+url=/i; after = /:[0-9a-zA-Z]+/; }
-else if (/(facebook|messenger)/i.test(HostName)) { anchor = /.+u=/i; after = '&h='; rwLink = rwFacebook; }
+else if (/(facebook|messenger)/i.test(HostName)) { anchor = /.+u=/i; after = /(\?|&)(h|fbclid)=/i; rwLink = rwFacebook; }
 else if (/forumavia/i.test(HostName)) anchor = /.+\/e\/\?l=/i;
 else if (/google/i.test(HostName)) rwLink = rwGoogle;
 else if (/(kat|kickass)/i.test(HostName)) { anchor = /.+confirm\/url\//i; remClases = 1; B64 = 1; }
