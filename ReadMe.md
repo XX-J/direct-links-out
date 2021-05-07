@@ -4,35 +4,18 @@ Userscript that removes all this "You are leaving our site..." and other redirec
 - A clean view of the links
 - Faster surfing
 - Better anonymity
+<br>
 
-# Supported sites:
-- 4PDA
-- DanielDefo
-- DeviantArt
-- Disq.us
-- Facebook
-- ForumAvia
-- Google
-- Instagram
-- JoyReactor
-- Kickass (with mirrors)
-- LRepacks
-- Addons.Mozilla.Org
-- Одноклассники
-- Picarto
-- Pixiv
-- Repack.me
-- RsLoad
-- Slack
-- SoundCloud
-- Steam
-- Taker
-- Tumblr
-- Twitter
-- Upwork
-- USBDev
-- ВКонтакте
-- Wikimapia
-- Яндекс
-- ЯПлакалъ
-- YouTube
+   | Supported sites: |  
+---------- | ---------- | ----------
+ 4PDA | DanielDefo | DeviantArt
+ Disq.us | Facebook | ForumAvia
+ Google | Instagram | JoyReactor
+ Kickass | LRepacks | Addons.Mozilla.Org
+ Одноклассники | OSzone | Picarto
+ Pixiv | PlayGround | Repack.me
+ RsLoad | Rubattle.net | Slack
+ SoundCloud | Steam | Taker
+ Tumblr | Twitter | Upwork
+ USBDev | ВКонтакте | Wikimapia
+ Яндекс | ЯПлакалъ | YouTube
