@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.58
+// @version         2.64
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -32,6 +32,7 @@
 //   Google
 // @include         *://google.*
 // @include         *://www.google.*
+// @include         *://news.google.*
 // @include         *://encrypted.google.*
 //   Instagram
 // @include         *://instagram.com/*
@@ -120,11 +121,11 @@
 
 
 var anchor, repAnchor = '', after;
-var remClases, B64, remAttrs;
-var retTrue = function() { return true; };  // dummy function to always return true
+var remAttrs, remClases, B64;
 
 //   Simple rewrite link
 function rwSimple(link) {
+  if (remAttrs) for (var i = 0; i < remAttrs.length; ++i) link.removeAttribute(remAttrs[i]);
   if (!!link.getAttribute('href')) {
     link.href = decodeURIComponent(link.href);
     if (anchor && (link.href.search(anchor) != -1)) {
@@ -134,7 +135,6 @@ function rwSimple(link) {
     }
     if (link.href.search(after) > 0) link.href = link.href.substring(0, link.href.search(after));
   }
-  if (remAttrs) for (var i = 0; i < remAttrs.length; ++i) link.removeAttribute(remAttrs[i]);
 }
 
 function rwaSimple() {
@@ -145,24 +145,24 @@ function rwaSimple() {
 
 //   Facebook
 function rwFacebook(link) {
-  if (/referrer_log/i.test(link.onclick)) {
-    link.removeAttribute('onclick');
-    link.removeAttribute('onmouseover');
-  }
+  if (/referrer_log/i.test(link.onclick)) remAttrs = ['onclick', 'onmouseover'];
   rwSimple(link);
 }
 
 //   Google
 function rwGoogle(link) {
-  // replace global rwt script
-  if (window.rwt && window.rwt != retTrue) {
-    delete window.rwt;
-    Object.defineProperty(window, 'rwt', { value: retTrue, writable: false });
-  }
-  // main search
-  if (link.hasAttribute('onmousedown')) link.removeAttribute('onmousedown');
-  // images
-  if (link.hasAttribute('jsaction') && !(link.getAttribute('jsaction') == '')) link.setAttribute('jsaction', link.getAttribute('jsaction').replace(/(mousedown:irc.rl|keydown:irc.rlk)/g,''));
+  rwSimple(link);
+  // Images  --- get rid of setInterval
+  if (/&tbm=isch/i.test(window.location)) setInterval (function() {
+    document.querySelector('[data-a] img').parentNode.href = document.querySelector('[data-a] img').src
+  }, 700);
+  // News  --- get rid of setInterval
+  if (/news/i.test(HostName) && link.hasAttribute('jslog')) setInterval (function() {
+    var jslog = link.getAttribute('jslog');
+    jslog = jslog.substring(jslog.indexOf(':') + 1, jslog.lastIndexOf(';')).replace(/(-|\.)/g, '+').replace(/_/g, '/');
+    jslog = unescape(window.atob(jslog).replace(/\\u/g, '%u'));
+    link.href = jslog.substring(jslog.indexOf('"') + 1, jslog.lastIndexOf('"'));
+  }, 700);
 }
 
 //   Twitter
@@ -188,7 +188,7 @@ else if (/deviantart/i.test(HostName)) anchor = /.+outgoing\?/i;
 else if (/disq/i.test(HostName)) { anchor = /.+url=/i; after = /:[0-9a-zA-Z]+/; }
 else if (/(facebook|messenger)/i.test(HostName)) { anchor = /.+u=/i; after = /(\?|&)(h|fbclid)=/i; rwLink = rwFacebook; }
 else if (/forumavia/i.test(HostName)) anchor = /.+\/e\/\?l=/i;
-else if (/google/i.test(HostName)) rwLink = rwGoogle;
+else if (/google/i.test(HostName)) { remAttrs = ['data-ved', 'onmousedown', 'jsaction', 'jsname']; rwLink = rwGoogle; }
 else if (/(kat|kickass)/i.test(HostName)) { anchor = /.+confirm\/url\//i; remClases = 1; B64 = 1; }
 else if (/(repack|rsload|usbdev)/i.test(HostName)) { anchor = /.+url=/i; B64 = 1; }
 else if (/mozilla/i.test(HostName)) { anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; after = /(\?|&)utm_content=/i; }
