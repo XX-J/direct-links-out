@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.65
+// @version         2.66
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -22,6 +22,8 @@
 // @include         *://*.disq.us/*
 // @include         *://disqus.com/*
 // @include         *://*.disqus.com/*
+//   ElectroTransport
+// @include         *://electrotransport.ru/*
 //   Facebook
 // @include         *://facebook.com/*
 // @include         *://*.facebook.com/*
@@ -191,7 +193,7 @@ else if (/(facebook|messenger)/i.test(HostName)) { anchor = /.+u=/i; after = /(\
 else if (/forumavia/i.test(HostName)) anchor = /.+\/e\/\?l=/i;
 else if (/google/i.test(HostName)) { remAttrs = ['data-ved', 'onmousedown', 'jsaction', 'jsname']; rwLink = rwGoogle; }
 else if (/(kat|kickass)/i.test(HostName)) { anchor = /.+confirm\/url\//i; remClases = 1; B64 = 1; }
-else if (/(repack|rsload|usbdev)/i.test(HostName)) { anchor = /.+url=/i; B64 = 1; }
+else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) { anchor = /.+url=/i; B64 = 1; }
 else if (/mozilla/i.test(HostName)) { anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; after = /(\?|&)utm_content=/i; }
 else if (/ok/i.test(HostName)) { anchor = /.+st\.link=/i; after = '&st.name='; }
 else if (/(oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) anchor = /.+url=/i;
