@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.64
+// @version         2.65
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -88,6 +88,7 @@
 //   Steam
 // @include         *://steamcommunity.com/*
 // @include         *://*.steamcommunity.com/*
+// @include         *://*.steampowered.com/*
 //   Taker
 // @include         *://taker.im/*
 // @include         *://*.taker.im/*
