@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.67
+// @version         2.72
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -53,6 +53,9 @@
 // @include         *://*.kickassto.co/*
 // @include         *://katproxy.is/*
 // @include         *://*.katproxy.is/*
+//   LiveInternet
+// @include         *://liveinternet.ru/*
+// @include         *://*.liveinternet.ru/*
 //   LRepacks
 // @include         *://lrepacks.*
 // @include         *://*.lrepacks.*
@@ -123,20 +126,20 @@
 // ==/UserScript==
 
 
-var anchor, repAnchor = '', after;
-var remAttrs, remClases, B64;
+var Anchor, ReplaceAnchor = '', After, ReplaceAfter = '';
+var RemoveAttributes, RemoveClasses, isBase64;
 
 //   Simple rewrite link
 function rwSimple(link) {
-  if (remAttrs) for (var i = 0; i < remAttrs.length; ++i) link.removeAttribute(remAttrs[i]);
+  if (RemoveAttributes) for (var i = 0; i < RemoveAttributes.length; ++i) link.removeAttribute(RemoveAttributes[i]);
   if (!!link.getAttribute('href')) {
     link.href = decodeURIComponent(link.href);
-    if (anchor && (link.href.search(anchor) != -1)) {
-      if (remClases) link.removeAttribute('class');
-      link.href = link.href.replace(anchor, repAnchor);
-      if (B64) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
+    if (Anchor && (link.href.search(Anchor) != -1)) {
+      if (RemoveClasses) link.removeAttribute('class');
+      link.href = link.href.replace(Anchor, ReplaceAnchor);
+      if (isBase64) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
     }
-    if (link.href.search(after) > 0) link.href = link.href.substring(0, link.href.search(after));
+    if (link.href.search(After) > 0) link.href = link.href.replace(After, ReplaceAfter);
   }
 }
 
@@ -148,7 +151,7 @@ function rwaSimple() {
 
 //   Facebook
 function rwFacebook(link) {
-  if (/referrer_log/i.test(link.onclick)) remAttrs = ['onclick', 'onmouseover'];
+  if (/referrer_log/i.test(link.onclick)) RemoveAttributes = ['onclick', 'onmouseover'];
   rwSimple(link);
 }
 
@@ -170,47 +173,41 @@ function rwGoogle(link) {
 
 //   Twitter
 function rwTwitter(link) {
-  if (link.hasAttribute('data-expanded-url') && !(link.getAttribute('data-expanded-url') == '')) {
-    link.href = link.getAttribute('data-expanded-url');
-    link.removeAttribute('data-expanded-url');
-  }
-}
-function rwaTwitter() {
-  var links = document.getElementsByClassName('twitter-timeline-link');
-  for (var i = 0; i < links.length; ++i) rwLink(links[i]);
+//  if (link.href.includes('/t.co/')) {   --- fetch ?
+  if (/^(ht|f)tp/i.test(link.text)) link.href = link.text.replace('…', '');
 }
 
 
-// determine anchors, functions and listeners
+//   Determine Anchors, functions and listeners
 var rwLink = rwSimple, rwAll = rwaSimple;
 var HostName = window.location.hostname;
 
-if (/(4pda|instagram)/i.test(HostName)) { anchor = /.+u=/i; after = '&e='; }
-else if (/danieldefo/i.test(HostName)) remAttrs = ['data-proxy-href'];
-else if (/deviantart/i.test(HostName)) anchor = /.+outgoing\?/i;
-else if (/disq/i.test(HostName)) { anchor = /.+url=/i; after = /:[0-9a-zA-Z]+/; }
-else if (/(facebook|messenger)/i.test(HostName)) { anchor = /.+u=/i; after = /(\?|&)(h|fbclid)=/i; rwLink = rwFacebook; }
-else if (/forumavia/i.test(HostName)) anchor = /.+\/e\/\?l=/i;
+if (/(4pda|instagram)/i.test(HostName)) { Anchor = /.+u=/i; After = /&e=.*/i; }
+else if (/danieldefo/i.test(HostName)) RemoveAttributes = ['data-proxy-href'];
+else if (/deviantart/i.test(HostName)) Anchor = /.+outgoing\?/i;
+else if (/disq/i.test(HostName)) { Anchor = /.+url=/i; After = /:[0-9a-zA-Z_&=]{10,}/; }
+else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) { Anchor = /.+url=/i; isBase64 = 1; }
+else if (/(facebook|messenger)/i.test(HostName)) { Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i; rwLink = rwFacebook; }
+else if (/forumavia/i.test(HostName)) Anchor = /.+\/e\/\?l=/i;
 else if (/google/i.test(HostName)) {
-  remAttrs = ['data-ved', 'onmousedown', 'oncontextmenu', 'ping', 'jsaction', 'jsname'];
+  RemoveAttributes = ['data-ved', 'onmousedown', 'oncontextmenu', 'ping', 'jsaction', 'jsname'];
   rwLink = rwGoogle;
   }
-else if (/(kat|kickass)/i.test(HostName)) { anchor = /.+confirm\/url\//i; remClases = 1; B64 = 1; }
-else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) { anchor = /.+url=/i; B64 = 1; }
-else if (/mozilla/i.test(HostName)) { anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; after = /(\?|&)utm_content=/i; }
-else if (/ok/i.test(HostName)) { anchor = /.+st\.link=/i; after = '&st.name='; }
-else if (/(oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) anchor = /.+url=/i;
-else if (/picarto/i.test(HostName)) { anchor = /.+referrer\?go=/i; after = '&ref='; }
-else if (/(playground|rubattle)/i.test(HostName)) anchor = /www\.[0-9a-zA-Z]+\.(net|ru)\/redirect\/(https\/|http\/|)/i;
-else if (/slack/i.test(HostName)) remAttrs = ['onclick', 'onmouseover'];
-else if (/taker/i.test(HostName)) anchor = /.+phpBB2\/goto\//i;
-else if (/tumblr/i.test(HostName)) { anchor = /.+redirect\?z=/i; after = '&t='; }
-else if (/twitter/i.test(HostName)) { rwLink = rwTwitter; rwAll = rwaTwitter; }
-else if (/upwork/i.test(HostName)) anchor = /.+leaving-odesk\?ref=/i;
-else if (/vk/i.test(HostName)) { anchor = /.+to=/i; after = /(\?|&)(cc_key|from_content)=/i; }
-else if (/yandex/i.test(HostName)) { anchor = /.+&img_url=/i; after = '&pos='; remAttrs = ['data-counter']; }
-else if (/yaplakal/i.test(HostName)) anchor = /.+go\/\?/i;
-else if (/youtube/i.test(HostName)) { anchor = /.+q=/i; after = /&(redir_token|event|v)=/; }
+else if (/(kat|kickass)/i.test(HostName)) { Anchor = /.+confirm\/url\//i; RemoveClasses = 1; isBase64 = 1; }
+else if (/(liveinternet|oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) Anchor = /.+url=/i;
+else if (/mozilla/i.test(HostName)) { Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; After = /(\?|&)utm_content=.*/i; }
+else if (/ok/i.test(HostName)) { Anchor = /.+st\.link=/i; After = /&st\.name=.*/i; }
+else if (/picarto/i.test(HostName)) { Anchor = /.+referrer\?go=/i; After = /&ref=.*/i; }
+else if (/(playground|rubattle)/i.test(HostName)) Anchor = /www\.[0-9a-zA-Z]+\.(net|ru)\/redirect\/(https\/|http\/|)/i;
+else if (/slack/i.test(HostName)) RemoveAttributes = ['onclick', 'onmouseover'];
+else if (/taker/i.test(HostName)) Anchor = /.+phpBB2\/goto\//i;
+else if (/tumblr/i.test(HostName)) { Anchor = /.+redirect\?z=/i; After = /&t=.*/i; }
+else if (/twitter/i.test(HostName)) rwLink = rwTwitter;
+else if (/upwork/i.test(HostName)) Anchor = /.+leaving-odesk\?ref=/i;
+else if (/vk/i.test(HostName)) { Anchor = /.+to=/i; After = /(\?|&)(cc_key|from_content)=.*/i; }
+else if (/yandex/i.test(HostName)) { Anchor = /.+&img_url=/i; After = /&pos=.*/i; RemoveAttributes = ['data-counter']; }
+else if (/yaplakal/i.test(HostName)) Anchor = /.+go\/\?/i;
+else if (/youtube/i.test(HostName)) { Anchor = /.+q=/i; After = /&(redir_token|event|v)=.*/i; }
 
 document.addEventListener('DOMNodeInserted', function(event) {
   if (!event || !event.target || !(event.target instanceof HTMLElement)) return;
