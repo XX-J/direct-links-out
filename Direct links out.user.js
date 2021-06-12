@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.72
+// @version         2.73
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -31,6 +31,9 @@
 // @include         *://*.messenger.com/*
 //   ForumAvia
 // @include         *://*.forumavia.ru/*
+//   GitHub
+// @include         *://github.com/*
+// @include         *://*.github.io/*
 //   Google
 // @include         *://google.*
 // @include         *://www.google.*
@@ -189,6 +192,7 @@ else if (/disq/i.test(HostName)) { Anchor = /.+url=/i; After = /:[0-9a-zA-Z_&=]{
 else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) { Anchor = /.+url=/i; isBase64 = 1; }
 else if (/(facebook|messenger)/i.test(HostName)) { Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i; rwLink = rwFacebook; }
 else if (/forumavia/i.test(HostName)) Anchor = /.+\/e\/\?l=/i;
+else if (/github/i.test(HostName)) { Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i; ReplaceAnchor = 'https://href.li/?'; }
 else if (/google/i.test(HostName)) {
   RemoveAttributes = ['data-ved', 'onmousedown', 'oncontextmenu', 'ping', 'jsaction', 'jsname'];
   rwLink = rwGoogle;
