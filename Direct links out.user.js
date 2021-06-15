@@ -2,15 +2,15 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.73
+// @version         2.74
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
 // @update          https://github.com/XX-J/Direct-links-out/raw/master/Direct links out.user.js
 // @author          nokeya & XX-J...
 //   4PDA
-// @include         *://4pda.ru/*
-// @include         *://*.4pda.ru/*
+// @include         *://4pda.*
+// @include         *://*.4pda.*
 //   DanielDefo
 // @include         *://danieldefo.ru/*
 // @include         *://*.danieldefo.ru/*
@@ -208,7 +208,7 @@ else if (/taker/i.test(HostName)) Anchor = /.+phpBB2\/goto\//i;
 else if (/tumblr/i.test(HostName)) { Anchor = /.+redirect\?z=/i; After = /&t=.*/i; }
 else if (/twitter/i.test(HostName)) rwLink = rwTwitter;
 else if (/upwork/i.test(HostName)) Anchor = /.+leaving-odesk\?ref=/i;
-else if (/vk/i.test(HostName)) { Anchor = /.+to=/i; After = /(\?|&)(cc_key|from_content)=.*/i; }
+else if (/vk/i.test(HostName)) { Anchor = /.+to=/i; After = /(\?|&)(cc_key|from_content|post)=.*/i; }
 else if (/yandex/i.test(HostName)) { Anchor = /.+&img_url=/i; After = /&pos=.*/i; RemoveAttributes = ['data-counter']; }
 else if (/yaplakal/i.test(HostName)) Anchor = /.+go\/\?/i;
 else if (/youtube/i.test(HostName)) { Anchor = /.+q=/i; After = /&(redir_token|event|v)=.*/i; }
