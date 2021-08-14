@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.74
+// @version         2.75
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -11,6 +11,8 @@
 //   4PDA
 // @include         *://4pda.*
 // @include         *://*.4pda.*
+//   AdGuard (forum)
+// @include         *://forum.adguard.com/*
 //   DanielDefo
 // @include         *://danieldefo.ru/*
 // @include         *://*.danieldefo.ru/*
@@ -186,13 +188,13 @@ var rwLink = rwSimple, rwAll = rwaSimple;
 var HostName = window.location.hostname;
 
 if (/(4pda|instagram)/i.test(HostName)) { Anchor = /.+u=/i; After = /&e=.*/i; }
+else if (/(adguard|github)/i.test(HostName)) { Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i; ReplaceAnchor = 'https://href.li/?'; }
 else if (/danieldefo/i.test(HostName)) RemoveAttributes = ['data-proxy-href'];
 else if (/deviantart/i.test(HostName)) Anchor = /.+outgoing\?/i;
 else if (/disq/i.test(HostName)) { Anchor = /.+url=/i; After = /:[0-9a-zA-Z_&=]{10,}/; }
 else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) { Anchor = /.+url=/i; isBase64 = 1; }
 else if (/(facebook|messenger)/i.test(HostName)) { Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i; rwLink = rwFacebook; }
 else if (/forumavia/i.test(HostName)) Anchor = /.+\/e\/\?l=/i;
-else if (/github/i.test(HostName)) { Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i; ReplaceAnchor = 'https://href.li/?'; }
 else if (/google/i.test(HostName)) {
   RemoveAttributes = ['data-ved', 'onmousedown', 'oncontextmenu', 'ping', 'jsaction', 'jsname'];
   rwLink = rwGoogle;
