@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.75
+// @version         2.80
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -44,6 +44,9 @@
 //   Instagram
 // @include         *://instagram.com/*
 // @include         *://*.instagram.com/*
+//   iXBT
+// @include         *://ixbt.com/*
+// @include         *://*.ixbt.com/*
 //   JoyReactor
 // @include         *://joyreactor.cc/*
 // @include         *://*.joyreactor.cc/*
@@ -51,13 +54,11 @@
 // @include         *://*.reactor.cc/*
 // @include         *://joyreactor.com/*
 // @include         *://*.joyreactor.com/*
-//   Kickass
+//   Kickass Torrents
 // @include         *://kickasstorrents.pw/*
 // @include         *://*.kickasstorrents.pw/*
 // @include         *://kickassto.co/*
 // @include         *://*.kickassto.co/*
-// @include         *://katproxy.is/*
-// @include         *://*.katproxy.is/*
 //   LiveInternet
 // @include         *://liveinternet.ru/*
 // @include         *://*.liveinternet.ru/*
@@ -90,6 +91,8 @@
 //   Rubattle.net
 // @include         *://rubattle.net/*
 // @include         *://*.rubattle.net/*
+//   rutracker.org
+// @include         *://rutracker.*
 //   Slack
 // @include         *://*.slack.com/*
 //   SoundCloud
@@ -131,16 +134,21 @@
 // ==/UserScript==
 
 
-var Anchor, ReplaceAnchor = '', After, ReplaceAfter = '';
-var RemoveAttributes, RemoveClasses, isBase64;
+var RemoveAttributes, RemoveClasses;
+var Anchor, ReplaceAnchor = '', isBase64, After, ReplaceAfter = '';
+var Location = window.location, HostName = window.location.hostname;
 
 //   Simple rewrite link
 function rwSimple(link) {
-  if (RemoveAttributes) for (var i = 0; i < RemoveAttributes.length; ++i) link.removeAttribute(RemoveAttributes[i]);
+  if (RemoveAttributes) for (var i = 0; i < RemoveAttributes.length; ++i) {
+    link.removeAttribute(RemoveAttributes[i]);
+  }
+  if (RemoveClasses) for (var i = 0; i < RemoveClasses.length; ++i) {
+    link.classList.remove(RemoveClasses[i]);
+  }
   if (!!link.getAttribute('href')) {
     link.href = decodeURIComponent(link.href);
     if (Anchor && (link.href.search(Anchor) != -1)) {
-      if (RemoveClasses) link.removeAttribute('class');
       link.href = link.href.replace(Anchor, ReplaceAnchor);
       if (isBase64) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
     }
@@ -164,7 +172,7 @@ function rwFacebook(link) {
 function rwGoogle(link) {
   rwSimple(link);
   // Images  --- get rid of setInterval
-  if (/&tbm=isch/i.test(window.location)) setInterval (function() {
+  if (/&tbm=isch/i.test(Location)) setInterval (function() {
     document.querySelector('[data-a] img').parentNode.href = document.querySelector('[data-a] img').src
   }, 700);
   // News  --- get rid of setInterval
@@ -176,6 +184,14 @@ function rwGoogle(link) {
   }, 700);
 }
 
+//   Kickass Torrents
+function rwKickassTorrents(link) {
+  if (!!link.getAttribute('href')) {
+    link.href = decodeURIComponent(link.href);
+    if (link.href.search(Anchor) != -1) rwSimple(link);
+  }
+}
+
 //   Twitter
 function rwTwitter(link) {
 //  if (link.href.includes('/t.co/')) {   --- fetch ?
@@ -185,35 +201,91 @@ function rwTwitter(link) {
 
 //   Determine Anchors, functions and listeners
 var rwLink = rwSimple, rwAll = rwaSimple;
-var HostName = window.location.hostname;
 
-if (/(4pda|instagram)/i.test(HostName)) { Anchor = /.+u=/i; After = /&e=.*/i; }
-else if (/(adguard|github)/i.test(HostName)) { Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i; ReplaceAnchor = 'https://href.li/?'; }
-else if (/danieldefo/i.test(HostName)) RemoveAttributes = ['data-proxy-href'];
-else if (/deviantart/i.test(HostName)) Anchor = /.+outgoing\?/i;
-else if (/disq/i.test(HostName)) { Anchor = /.+url=/i; After = /:[0-9a-zA-Z_&=]{10,}/; }
-else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) { Anchor = /.+url=/i; isBase64 = 1; }
-else if (/(facebook|messenger)/i.test(HostName)) { Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i; rwLink = rwFacebook; }
-else if (/forumavia/i.test(HostName)) Anchor = /.+\/e\/\?l=/i;
+if (/(4pda|instagram)/i.test(HostName)) {
+  Anchor = /.+u=/i; After = /&e=.*/i;
+}
+else if (/(adguard|github)/i.test(HostName)) {
+  Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
+  ReplaceAnchor = 'https://href.li/?';
+}
+else if (/danieldefo/i.test(HostName)) {
+  RemoveAttributes = ['data-proxy-href'];
+}
+else if (/deviantart/i.test(HostName)) {
+  Anchor = /.+outgoing\?/i;
+}
+else if (/disq/i.test(HostName)) {
+  Anchor = /.+url=/i; After = /:[0-9a-zA-Z_&=]{10,}/;
+}
+else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) {
+  Anchor = /.+url=/i; isBase64 = 1;
+}
+else if (/(facebook|messenger)/i.test(HostName)) {
+  Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i;
+  rwLink = rwFacebook;
+}
+else if (/forumavia/i.test(HostName)) {
+  Anchor = /.+\/e\/\?l=/i;
+}
 else if (/google/i.test(HostName)) {
   RemoveAttributes = ['data-ved', 'onmousedown', 'oncontextmenu', 'ping', 'jsaction', 'jsname'];
   rwLink = rwGoogle;
-  }
-else if (/(kat|kickass)/i.test(HostName)) { Anchor = /.+confirm\/url\//i; RemoveClasses = 1; isBase64 = 1; }
-else if (/(liveinternet|oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) Anchor = /.+url=/i;
-else if (/mozilla/i.test(HostName)) { Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; After = /(\?|&)utm_content=.*/i; }
-else if (/ok/i.test(HostName)) { Anchor = /.+st\.link=/i; After = /&st\.name=.*/i; }
-else if (/picarto/i.test(HostName)) { Anchor = /.+referrer\?go=/i; After = /&ref=.*/i; }
-else if (/(playground|rubattle)/i.test(HostName)) Anchor = /www\.[0-9a-zA-Z]+\.(net|ru)\/redirect\/(https\/|http\/|)/i;
-else if (/slack/i.test(HostName)) RemoveAttributes = ['onclick', 'onmouseover'];
-else if (/taker/i.test(HostName)) Anchor = /.+phpBB2\/goto\//i;
-else if (/tumblr/i.test(HostName)) { Anchor = /.+redirect\?z=/i; After = /&t=.*/i; }
-else if (/twitter/i.test(HostName)) rwLink = rwTwitter;
-else if (/upwork/i.test(HostName)) Anchor = /.+leaving-odesk\?ref=/i;
-else if (/vk/i.test(HostName)) { Anchor = /.+to=/i; After = /(\?|&)(cc_key|from_content|post)=.*/i; }
-else if (/yandex/i.test(HostName)) { Anchor = /.+&img_url=/i; After = /&pos=.*/i; RemoveAttributes = ['data-counter']; }
-else if (/yaplakal/i.test(HostName)) Anchor = /.+go\/\?/i;
-else if (/youtube/i.test(HostName)) { Anchor = /.+q=/i; After = /&(redir_token|event|v)=.*/i; }
+}
+else if (/ixbt/i.test(HostName)) {
+  Anchor = /.+live\/redirect\//i; isBase64 = 1;
+}
+else if (/kickassto/i.test(HostName)) {
+  RemoveAttributes = ['class'];
+  Anchor = /.+confirm\/url\//i; isBase64 = 1;
+  rwLink = rwKickassTorrents;
+}
+else if (/(liveinternet|oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) {
+  Anchor = /.+url=/i;
+}
+else if (/mozilla/i.test(HostName)) {
+  Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; After = /(\?|&)utm_content=.*/i;
+}
+else if (/ok/i.test(HostName)) {
+  Anchor = /.+st\.link=/i; After = /&st\.name=.*/i;
+}
+else if (/picarto/i.test(HostName)) {
+  Anchor = /.+referrer\?go=/i; After = /&ref=.*/i;
+}
+else if (/(playground|rubattle)/i.test(HostName)) {
+  Anchor = /www\.[0-9a-zA-Z]+\.(net|ru)\/redirect\/(https\/|http\/|)/i;
+}
+else if (/rutracker/i.test(HostName)) {
+  RemoveClasses = ['p-ext-link'];
+}
+else if (/slack/i.test(HostName)) {
+  RemoveAttributes = ['onclick', 'onmouseover'];
+}
+else if (/taker/i.test(HostName)) {
+  Anchor = /.+phpBB2\/goto\//i;
+}
+else if (/tumblr/i.test(HostName)) {
+  Anchor = /.+redirect\?z=/i; After = /&t=.*/i;
+}
+else if (/twitter/i.test(HostName)) {
+  rwLink = rwTwitter;
+}
+else if (/upwork/i.test(HostName)) {
+  Anchor = /.+leaving-odesk\?ref=/i;
+}
+else if (/vk/i.test(HostName)) {
+  Anchor = /.+to=/i; After = /(\?|&)(cc_key|from_content|post)=.*/i;
+}
+else if (/yandex/i.test(HostName)) {
+  RemoveAttributes = ['data-counter'];
+  Anchor = /.+&img_url=/i; After = /&pos=.*/i;
+}
+else if (/yaplakal/i.test(HostName)) {
+  Anchor = /.+go\/\?/i;
+}
+else if (/youtube/i.test(HostName)) {
+  Anchor = /.+q=/i; After = /&(redir_token|event|v)=.*/i;
+}
 
 document.addEventListener('DOMNodeInserted', function(event) {
   if (!event || !event.target || !(event.target instanceof HTMLElement)) return;
