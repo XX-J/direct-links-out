@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.80
+// @version         2.81
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -31,6 +31,8 @@
 // @include         *://*.facebook.com/*
 // @include         *://messenger.com/*
 // @include         *://*.messenger.com/*
+//   Фишки
+// @include         *://fishki.net/*
 //   ForumAvia
 // @include         *://*.forumavia.ru/*
 //   GitHub
@@ -225,6 +227,9 @@ else if (/(facebook|messenger)/i.test(HostName)) {
   Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i;
   rwLink = rwFacebook;
 }
+else if (/(fishki|liveinternet|oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) {
+  Anchor = /.+url=/i;
+}
 else if (/forumavia/i.test(HostName)) {
   Anchor = /.+\/e\/\?l=/i;
 }
@@ -239,9 +244,6 @@ else if (/kickassto/i.test(HostName)) {
   RemoveAttributes = ['class'];
   Anchor = /.+confirm\/url\//i; isBase64 = 1;
   rwLink = rwKickassTorrents;
-}
-else if (/(liveinternet|oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) {
-  Anchor = /.+url=/i;
 }
 else if (/mozilla/i.test(HostName)) {
   Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; After = /(\?|&)utm_content=.*/i;
