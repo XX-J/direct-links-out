@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.81
+// @version         2.82
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -31,8 +31,11 @@
 // @include         *://*.facebook.com/*
 // @include         *://messenger.com/*
 // @include         *://*.messenger.com/*
+//   Ferra.ru
+// @include         *://*.ferra.ru/*
 //   Фишки
 // @include         *://fishki.net/*
+// @include         *://*.fishki.net/*
 //   ForumAvia
 // @include         *://*.forumavia.ru/*
 //   GitHub
@@ -226,6 +229,9 @@ else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) {
 else if (/(facebook|messenger)/i.test(HostName)) {
   Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i;
   rwLink = rwFacebook;
+}
+else if (/ferra/i.test(HostName)) {
+  Anchor = /.+click\/forums_out\//i;
 }
 else if (/(fishki|liveinternet|oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) {
   Anchor = /.+url=/i;
