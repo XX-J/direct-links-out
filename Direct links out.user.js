@@ -6,7 +6,7 @@
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
-// @update          https://github.com/XX-J/Direct-links-out/raw/master/Direct links out.user.js
+// @update          https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 // @author          nokeya & XX-J...
 //   4PDA
 // @include         *://4pda.*
