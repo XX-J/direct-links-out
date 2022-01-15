@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.82
+// @version         2.83
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -72,6 +72,8 @@
 // @include         *://*.lrepacks.*
 //   Addons.Mozilla.Org
 // @include         *://addons.mozilla.org/*
+//   MySKU
+// @include         *://mysku.ru/*
 //   Одноклассники
 // @include         *://ok.ru/*
 // @include         *://*.ok.ru/*
@@ -253,6 +255,9 @@ else if (/kickassto/i.test(HostName)) {
 }
 else if (/mozilla/i.test(HostName)) {
   Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; After = /(\?|&)utm_content=.*/i;
+}
+else if (/mysku/i.test(HostName)) {
+  Anchor = /.+\?r=/i; After = /&key=.*/i;
 }
 else if (/ok/i.test(HostName)) {
   Anchor = /.+st\.link=/i; After = /&st\.name=.*/i;
