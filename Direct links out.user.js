@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.83
+// @version         2.90
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -138,34 +138,36 @@
 //   YouTube
 // @include         *://youtube.com/*
 // @include         *://*.youtube.com/*
+//   Zoon
+// @include         *://zoon.ru/*
+// @include         *://*.zoon.ru/*
 // ==/UserScript==
 
 
-var RemoveAttributes, RemoveClasses;
-var Anchor, ReplaceAnchor = '', isBase64, After, ReplaceAfter = '';
-var Location = window.location, HostName = window.location.hostname;
+let RemoveAttributes, RemoveClasses;
+let Anchor, ReplacerAnchor = '', After, ReplacerAfter = '';
+const Location = window.location, HostName = window.location.hostname;
 
 //   Simple rewrite link
 function rwSimple(link) {
-  if (RemoveAttributes) for (var i = 0; i < RemoveAttributes.length; ++i) {
-    link.removeAttribute(RemoveAttributes[i]);
+  if (RemoveAttributes) for (let c = 0; c < RemoveAttributes.length; c++) {
+    link.removeAttribute(RemoveAttributes[c]);
   }
-  if (RemoveClasses) for (var i = 0; i < RemoveClasses.length; ++i) {
-    link.classList.remove(RemoveClasses[i]);
+  if (RemoveClasses) for (let c = 0; c < RemoveClasses.length; c++) {
+    link.classList.remove(RemoveClasses[c]);
   }
-  if (!!link.getAttribute('href')) {
-    link.href = decodeURIComponent(link.href);
-    if (Anchor && (link.href.search(Anchor) != -1)) {
-      link.href = link.href.replace(Anchor, ReplaceAnchor);
-      if (isBase64) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
+  if (/^http/i.test(link.href)) {
+    if (Anchor && ~link.href.search(Anchor)) {
+      link.href = decodeURIComponent(link.href).replace(Anchor, ReplacerAnchor);
+      if (/^(aHR0c|ZnRw|bWFnbmV0|ZWQya)/.test(link.getAttribute('href'))) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
     }
-    if (link.href.search(After) > 0) link.href = link.href.replace(After, ReplaceAfter);
+    if (link.href.search(After) > 0) link.href = decodeURIComponent(link.href).replace(After, ReplacerAfter);
   }
 }
 
 function rwaSimple() {
-  var links = document.getElementsByTagName('a');
-  for (var i = 0; i < links.length; ++i) rwLink(links[i]);
+  let links = document.getElementsByTagName('a');
+  for (let c = 0; c < links.length; c++) rwLink(links[c]);
 }
 
 
@@ -184,7 +186,7 @@ function rwGoogle(link) {
   }, 700);
   // News  --- get rid of setInterval
   if (/news/i.test(HostName) && link.hasAttribute('jslog')) setInterval (function() {
-    var jslog = link.getAttribute('jslog');
+    let jslog = link.getAttribute('jslog');
     jslog = jslog.substring(jslog.indexOf(':') + 1, jslog.lastIndexOf(';')).replace(/(-|\.)/g, '+').replace(/_/g, '/');
     jslog = unescape(window.atob(jslog).replace(/\\u/g, '%u'));
     link.href = jslog.substring(jslog.indexOf('"') + 1, jslog.lastIndexOf('"'));
@@ -195,7 +197,7 @@ function rwGoogle(link) {
 function rwKickassTorrents(link) {
   if (!!link.getAttribute('href')) {
     link.href = decodeURIComponent(link.href);
-    if (link.href.search(Anchor) != -1) rwSimple(link);
+    if (~link.href.search(Anchor)) rwSimple(link);
   }
 }
 
@@ -207,14 +209,14 @@ function rwTwitter(link) {
 
 
 //   Determine Anchors, functions and listeners
-var rwLink = rwSimple, rwAll = rwaSimple;
+let rwLink = rwSimple, rwAll = rwaSimple;
 
 if (/(4pda|instagram)/i.test(HostName)) {
-  Anchor = /.+u=/i; After = /&e=.*/i;
+  Anchor = /.+u=/i;  After = /&e=.*/i;
 }
 else if (/(adguard|github)/i.test(HostName)) {
   Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
-  ReplaceAnchor = 'https://href.li/?';
+  ReplacerAnchor = 'https://href.li/?';
 }
 else if (/danieldefo/i.test(HostName)) {
   RemoveAttributes = ['data-proxy-href'];
@@ -223,50 +225,47 @@ else if (/deviantart/i.test(HostName)) {
   Anchor = /.+outgoing\?/i;
 }
 else if (/disq/i.test(HostName)) {
-  Anchor = /.+url=/i; After = /:[0-9a-zA-Z_&=]{10,}/;
+  Anchor = /.+url=/i;  After = /:[^\.]+$/;
 }
-else if (/(electrotransport|repack|rsload|usbdev)/i.test(HostName)) {
-  Anchor = /.+url=/i; isBase64 = 1;
+else if (/(electrotransport|fishki|liveinternet|oszone|pixiv|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia)/i.test(HostName)) {
+  Anchor = /.+url=/i;
 }
 else if (/(facebook|messenger)/i.test(HostName)) {
-  Anchor = /.+u=/i; After = /(\?|&)(h|fbclid)=.*/i;
+  Anchor = /.+u=/i;  After = /(\?|&)(h|fbclid)=.*/i;
   rwLink = rwFacebook;
 }
 else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
 }
-else if (/(fishki|liveinternet|oszone|pixiv|reactor|soundcloud|steam|wikimapia)/i.test(HostName)) {
-  Anchor = /.+url=/i;
-}
 else if (/forumavia/i.test(HostName)) {
   Anchor = /.+\/e\/\?l=/i;
 }
 else if (/google/i.test(HostName)) {
-  RemoveAttributes = ['data-ved', 'onmousedown', 'oncontextmenu', 'ping', 'jsaction', 'jsname'];
+  RemoveAttributes = ['data-jsarwt', 'data-usg', 'data-ved', 'jsname', 'jsaction'];
   rwLink = rwGoogle;
 }
 else if (/ixbt/i.test(HostName)) {
-  Anchor = /.+live\/redirect\//i; isBase64 = 1;
+  Anchor = /.+live\/redirect\//i;
 }
 else if (/kickassto/i.test(HostName)) {
   RemoveAttributes = ['class'];
-  Anchor = /.+confirm\/url\//i; isBase64 = 1;
+  Anchor = /.+confirm\/url\//i;
   rwLink = rwKickassTorrents;
 }
 else if (/mozilla/i.test(HostName)) {
-  Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i; After = /(\?|&)utm_content=.*/i;
+  Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i;  After = /(\?|&)utm_content=.*/i;
 }
 else if (/mysku/i.test(HostName)) {
-  Anchor = /.+\?r=/i; After = /&key=.*/i;
+  Anchor = /.+\?r=/i;  After = /&key=.*/i;
 }
 else if (/ok/i.test(HostName)) {
-  Anchor = /.+st\.link=/i; After = /&st\.name=.*/i;
+  Anchor = /.+st\.link=/i;  After = /&st\.name=.*/i;
 }
 else if (/picarto/i.test(HostName)) {
-  Anchor = /.+referrer\?go=/i; After = /&ref=.*/i;
+  Anchor = /.+referrer\?go=/i;  After = /&ref=.*/i;
 }
 else if (/(playground|rubattle)/i.test(HostName)) {
-  Anchor = /www\.[0-9a-zA-Z]+\.(net|ru)\/redirect\/(https\/|http\/|)/i;
+  Anchor = /www\.(playground\.ru|rubattle\.net)\/redirect\/(https?\/)?/i;
 }
 else if (/rutracker/i.test(HostName)) {
   RemoveClasses = ['p-ext-link'];
@@ -278,7 +277,7 @@ else if (/taker/i.test(HostName)) {
   Anchor = /.+phpBB2\/goto\//i;
 }
 else if (/tumblr/i.test(HostName)) {
-  Anchor = /.+redirect\?z=/i; After = /&t=.*/i;
+  Anchor = /.+redirect\?z=/i;  After = /&t=.*/i;
 }
 else if (/twitter/i.test(HostName)) {
   rwLink = rwTwitter;
@@ -286,26 +285,26 @@ else if (/twitter/i.test(HostName)) {
 else if (/upwork/i.test(HostName)) {
   Anchor = /.+leaving-odesk\?ref=/i;
 }
-else if (/vk/i.test(HostName)) {
-  Anchor = /.+to=/i; After = /(\?|&)(cc_key|from_content|post)=.*/i;
+else if (/(vk|zoon)/i.test(HostName)) {
+  Anchor = /.+to=/i;  After = /(\?|&)(cc_key|from_content|post|hash)=.*/i;
 }
 else if (/yandex/i.test(HostName)) {
   RemoveAttributes = ['data-counter'];
-  Anchor = /.+&img_url=/i; After = /&pos=.*/i;
+  Anchor = /.+&img_url=/i;  After = /&pos=.*/i;
 }
 else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
 }
 else if (/youtube/i.test(HostName)) {
-  Anchor = /.+q=/i; After = /&(redir_token|event|v)=.*/i;
+  Anchor = /.+q=/i;  After = /&(redir_token|event|v)=.*/i;
 }
 
 document.addEventListener('DOMNodeInserted', function(event) {
   if (!event || !event.target || !(event.target instanceof HTMLElement)) return;
-  var node = event.target;
+  let node = event.target;
   if (node instanceof HTMLAnchorElement) rwLink(node);
-  var links = node.getElementsByTagName('a');
-  for (var i = 0; i < links.length; ++i) rwLink(links[i]);
+  let links = node.getElementsByTagName('a');
+  for (let c = 0; c < links.length; c++) rwLink(links[c]);
 }, false);
 
 rwAll();
