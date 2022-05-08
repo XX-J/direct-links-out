@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.90
+// @version         2.91
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -13,6 +13,9 @@
 // @include         *://*.4pda.*
 //   AdGuard (forum)
 // @include         *://forum.adguard.com/*
+//   Большой вопрос
+// @include         *://bolshoyvopros.ru/*
+// @include         *://*.bolshoyvopros.ru/*
 //   DanielDefo
 // @include         *://danieldefo.ru/*
 // @include         *://*.danieldefo.ru/*
@@ -218,6 +221,9 @@ else if (/(adguard|github)/i.test(HostName)) {
   Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
   ReplacerAnchor = 'https://href.li/?';
 }
+else if (/(bolshoyvopros|forumavia)/i.test(HostName)) {
+  Anchor = /.+\?l=/i;  After = /&src=.*/i;
+}
 else if (/danieldefo/i.test(HostName)) {
   RemoveAttributes = ['data-proxy-href'];
 }
@@ -236,9 +242,6 @@ else if (/(facebook|messenger)/i.test(HostName)) {
 }
 else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
-}
-else if (/forumavia/i.test(HostName)) {
-  Anchor = /.+\/e\/\?l=/i;
 }
 else if (/google/i.test(HostName)) {
   RemoveAttributes = ['data-jsarwt', 'data-usg', 'data-ved', 'jsname', 'jsaction'];
