@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         2.91
+// @version         2.92
 // @description     Removes all "You are leaving our site..." and redirection stuff from links
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -73,6 +73,8 @@
 //   LRepacks
 // @include         *://lrepacks.*
 // @include         *://*.lrepacks.*
+//   Ответы Mail.ru
+// @include         *://otvet.mail.ru/*
 //   Addons.Mozilla.Org
 // @include         *://addons.mozilla.org/*
 //   MySKU
@@ -204,6 +206,11 @@ function rwKickassTorrents(link) {
   }
 }
 
+//   Ответы Mail.ru
+function rwOtvetyMailRu(link) {
+  if (/^((ht|f)tp|magnet|ed2k)/i.test(link.href) && !/^(ht|f)tps?:\/\/[^\/]*mail\.ru/i.test(link.href)) link.rel = "301";
+}
+
 //   Twitter
 function rwTwitter(link) {
 //  if (link.href.includes('/t.co/')) {   --- fetch ?
@@ -254,6 +261,9 @@ else if (/kickassto/i.test(HostName)) {
   RemoveAttributes = ['class'];
   Anchor = /.+confirm\/url\//i;
   rwLink = rwKickassTorrents;
+}
+else if (/otvet\.mail\.ru/i.test(HostName)) {
+  rwLink = rwOtvetyMailRu;
 }
 else if (/mozilla/i.test(HostName)) {
   Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i;  After = /(\?|&)utm_content=.*/i;
