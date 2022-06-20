@@ -2,9 +2,9 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         3.0
-// @description     Removes all "You are leaving our site..." and redirection stuff from links
-// @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт" и переадресацию из ссылок
+// @version         3.1
+// @description     Removes all "You are leaving our site..." and redirection stuff from links.
+// @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
 // @update          https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 // @author          nokeya & XX-J...
@@ -51,7 +51,6 @@
 // @include         *://google.*
 // @include         *://www.google.*
 // @include         *://news.google.*
-// @include         *://encrypted.google.*
 //   Instagram
 // @include         *://instagram.com/*
 // @include         *://*.instagram.com/*
@@ -106,10 +105,10 @@
 //   RsLoad
 // @include         *://rsload.net/*
 // @include         *://*.rsload.net/*
-//   Rubattle.net
+//   RuBattle.net
 // @include         *://rubattle.net/*
 // @include         *://*.rubattle.net/*
-//   rutracker.org
+//   RuTracker.org
 // @include         *://rutracker.*
 //   Slack
 // @include         *://*.slack.com/*
@@ -145,6 +144,8 @@
 // @include         *://*.yandex.*/search/*
 // @include         *://yandex.*/images/*
 // @include         *://*.yandex.*/images/*
+// @include         *://yandex.*/news/*
+// @include         *://*.yandex.*/news/*
 //   ЯПлакалъ
 // @include         *://yaplakal.com/*
 // @include         *://*.yaplakal.com/*
@@ -186,21 +187,22 @@ let rwAll = () => {
           for (let AnchorElement of Node.querySelectorAll('a')) rwLink(AnchorElement);
         }
       }
+      if (Mutation.type === "attributes") rwLink(Mutation.target);
     }
-  }).observe( document.body, { childList: true, subtree: true });
+  }).observe( document.body, { childList: true, attributeFilter: ['href'], subtree: true });
 }
 
 
 //   Determine anchors, functions and observers:
 
-if (/(4pda|instagram)/i.test(HostName)) {
+if (/4pda|instagram/i.test(HostName)) {
   Anchor = /.+u=/i;  After = /&e=.*/i;
 }
-else if (/(adguard|github)/i.test(HostName)) {
+else if (/adguard|github/i.test(HostName)) {
   Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
   ReplacerAnchor = 'https://href.li/?';
 }
-else if (/(bolshoyvopros|forumavia)/i.test(HostName)) {
+else if (/bolshoyvopros|forumavia/i.test(HostName)) {
   Anchor = /.+\?l=/i;  After = /&src=.*/i;
 }
 else if (/(^|\.)car\.ru$/i.test(HostName)) {
@@ -236,10 +238,10 @@ else if (/deviantart/i.test(HostName)) {
 else if (/disq/i.test(HostName)) {
   Anchor = /.+url=/i;  After = /:[^\.]{9,}$/;
 }
-else if (/(electrotransport|fishki|liveinternet|oszone|pixiv|rambler|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia)/i.test(HostName)) {
+else if (/electrotransport|fishki|liveinternet|oszone|pixiv|rambler|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+url=/i;
 }
-else if (/(facebook|messenger)/i.test(HostName)) {
+else if (/facebook|messenger/i.test(HostName)) {
   Anchor = /.+u=/i;  After = /(\?|&)(h|fbclid)=.*/i;
   rwLink = link => {
     if (/referrer_log/i.test(link.onclick)) { link.removeAttribute('onclick'); link.removeAttribute('onmouseover') }
@@ -249,16 +251,25 @@ else if (/(facebook|messenger)/i.test(HostName)) {
 else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
 }
-else if (/google/i.test(HostName)) {
-//  if (/referrer_log/i.test(link.onclick)) for (let RemoveAttribute of ['onclick', 'onmouseover']) link.removeAttribute(RemoveAttribute);
-  RemoveAttributes = ['data-jsarwt', 'data-usg', 'data-ved', 'jsname', 'jsaction'];
+else if (/\/\/(www\.)?google\.(.(?!(\?|&)tbm=))+$/i.test(Location)) {
+  rwLink = link => { for (let RemoveAttribute of ['data-jsarwt', 'data-usg', 'data-ved']) link.removeAttribute(RemoveAttribute) }
+}
+else if (/\/\/(www\.)?google\..+(\?|&)tbm=isch/i.test(Location)) {
+  Anchor = /.+\?imgurl=/i;  After = /&imgrefurl=.*/i;
+  rwAll = () => {
+    document.querySelector('[data-a] [role="region"] > [role="link"]').href = document.querySelector('[data-a] [role="region"] > [role="link"] > img').attributes.src.value;
+    new MutationObserver( Mutations => {
+      for (let Mutation of Mutations) if (Mutation.attributeName === "href") { rwLink(Mutation.target) } else {
+        if (Mutation.target === document.querySelector('[data-a] [role="region"] > [role="link"] > img')) Mutation.target.parentNode.href = Mutation.target.attributes.src.value;
+      }
+    }).observe( document.body, { attributeFilter: ['href', 'src'], subtree: true });
+  }
+}
+else if (/news\.google/i.test(HostName)) {
+  //   Rid of Event Listener 'click'.
   rwLink = link => {
-    rwSimple(link);
-    //  Images
-    if (/&tbm=isch/i.test(Location)) document.querySelector('[data-a] img').parentNode.href = document.querySelector('[data-a] img').getAttribute('src');
-    //  News
-    if (/news/i.test(HostName) && link.hasAttribute('jslog')) {
-      let jslog = link.getAttribute('jslog');
+    if (link.hasAttribute('jslog')) {
+      let jslog = link.getAttribute('jslog');  link.removeAttribute('jslog');
       jslog = jslog.slice(jslog.indexOf(':') + 1, jslog.lastIndexOf(';')).replace(/(-|\.)/g, '+').replace(/_/g, '/');
       jslog = unescape(window.atob(jslog).replace(/\\u/g, '%u'));
       link.href = jslog.slice(jslog.indexOf('"') + 1, jslog.lastIndexOf('"'));
@@ -288,8 +299,8 @@ else if (/ok/i.test(HostName)) {
 else if (/picarto/i.test(HostName)) {
   Anchor = /.+referrer\?go=/i;  After = /&ref=.*/i;
 }
-else if (/(playground|rubattle)/i.test(HostName)) {
-  Anchor = /www\.(playground\.ru|rubattle\.net)\/redirect\/(https?\/)?/i;
+else if (/playground|rubattle/i.test(HostName)) {
+  Anchor = /w.+\/redirect\/(https?\/)?/i;
 }
 else if (/rutracker/i.test(HostName)) {
   rwAll = () => {
@@ -318,20 +329,27 @@ else if (/twitter/i.test(HostName)) {
 //      link.href = (await (await fetch(link.href)).text()).replace(/.+\<title\>/i, '').replace(/\<\/title.+/i, '');
 //      console.log('222 Post_fetch 222');
 //    }
+//      let IntervalID = setInterval( () => {
+//        link.href = link.firstChild.attributes.src.value;
+//        if (/^(ht|f)tp/i.test(link.href)) clearInterval(IntervalID);
+//      }, 500)
     }
   }
 }
 else if (/upwork/i.test(HostName)) {
   Anchor = /.+leaving-odesk\?ref=/i;
 }
-else if (/(vk|zoon)/i.test(HostName)) {
+else if (/vk|zoon/i.test(HostName)) {
   Anchor = /.+to=/i;  After = /(\?|&)(cc_key|from_content|post|hash)=.*/i;
 }
-else if (/yandex\.[a-z]{1,4}\/search\//i.test(Location)) {
+else if (/yandex\.[^\.]{1,4}\/search/i.test(Location)) {
   rwLink = link => { link.removeAttribute('data-counter') }
 }
-else if (/yandex\.[a-z]{1,4}\/images\//i.test(Location)) {
+else if (/yandex\.[^\.]{1,4}\/images/i.test(Location)) {
   Anchor = /.+&img_url=/i;  After = /&text=.*/i;
+}
+else if (/yandex\.[^\.]{1,4}\/news/i.test(Location)) {
+  After = /(\?|&)utm_source=.*/i;
 }
 else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
