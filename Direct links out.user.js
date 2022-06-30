@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         3.1
+// @version         3.2
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -236,13 +236,13 @@ else if (/deviantart/i.test(HostName)) {
   Anchor = /.+outgoing\?/i;
 }
 else if (/disq/i.test(HostName)) {
-  Anchor = /.+url=/i;  After = /:[^\.]{9,}$/;
+  Anchor = /.+url=/i;  After = /:[^.]{9,}$/;
 }
 else if (/electrotransport|fishki|liveinternet|oszone|pixiv|rambler|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+url=/i;
 }
 else if (/facebook|messenger/i.test(HostName)) {
-  Anchor = /.+u=/i;  After = /(\?|&)(h|fbclid)=.*/i;
+  Anchor = /.+u=/i;  After = /[?&](h|fbclid)=.*/i;
   rwLink = link => {
     if (/referrer_log/i.test(link.onclick)) { link.removeAttribute('onclick'); link.removeAttribute('onmouseover') }
     rwSimple(link);
@@ -251,10 +251,10 @@ else if (/facebook|messenger/i.test(HostName)) {
 else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
 }
-else if (/\/\/(www\.)?google\.(.(?!(\?|&)tbm=))+$/i.test(Location)) {
+else if (/\/\/(www\.)?google\.(.(?![?&]tbm=))+$/i.test(Location)) {
   rwLink = link => { for (let RemoveAttribute of ['data-jsarwt', 'data-usg', 'data-ved']) link.removeAttribute(RemoveAttribute) }
 }
-else if (/\/\/(www\.)?google\..+(\?|&)tbm=isch/i.test(Location)) {
+else if (/\/\/(www\.)?google\..+[?&]tbm=isch/i.test(Location)) {
   Anchor = /.+\?imgurl=/i;  After = /&imgrefurl=.*/i;
   rwAll = () => {
     document.querySelector('[data-a] [role="region"] > [role="link"]').href = document.querySelector('[data-a] [role="region"] > [role="link"] > img').attributes.src.value;
@@ -288,7 +288,7 @@ else if (/otvet\.mail\.ru/i.test(HostName)) {
   rwLink = link => { if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.getAttribute('href')) && !/(^|\.)mail\.ru$/i.test(link.hostname)) link.rel = "301" }
 }
 else if (/mozilla/i.test(HostName)) {
-  Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i;  After = /(\?|&)utm_content=.*/i;
+  Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i;  After = /[?&]utm_content=.*/i;
 }
 else if (/mysku/i.test(HostName)) {
   Anchor = /.+\?r=/i;  After = /&key=.*/i;
@@ -340,16 +340,16 @@ else if (/upwork/i.test(HostName)) {
   Anchor = /.+leaving-odesk\?ref=/i;
 }
 else if (/vk|zoon/i.test(HostName)) {
-  Anchor = /.+to=/i;  After = /(\?|&)(cc_key|from_content|post|hash)=.*/i;
+  Anchor = /.+to=/i;  After = /[?&](cc_key|from_content|post|hash)=.*/i;
 }
-else if (/yandex\.[^\.]{1,4}\/search/i.test(Location)) {
+else if (/yandex\.[^.]{1,4}\/search/i.test(Location)) {
   rwLink = link => { link.removeAttribute('data-counter') }
 }
-else if (/yandex\.[^\.]{1,4}\/images/i.test(Location)) {
+else if (/yandex\.[^.]{1,4}\/images/i.test(Location)) {
   Anchor = /.+&img_url=/i;  After = /&text=.*/i;
 }
-else if (/yandex\.[^\.]{1,4}\/news/i.test(Location)) {
-  After = /(\?|&)utm_source=.*/i;
+else if (/yandex\.[^.]{1,4}\/news/i.test(Location)) {
+  After = /[?&]utm_source=.*/i;
 }
 else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
