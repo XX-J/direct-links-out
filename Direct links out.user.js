@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         3.2
+// @version         3.3
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -257,7 +257,8 @@ else if (/\/\/(www\.)?google\.(.(?![?&]tbm=))+$/i.test(Location)) {
 else if (/\/\/(www\.)?google\..+[?&]tbm=isch/i.test(Location)) {
   Anchor = /.+\?imgurl=/i;  After = /&imgrefurl=.*/i;
   rwAll = () => {
-    document.querySelector('[data-a] [role="region"] > [role="link"]').href = document.querySelector('[data-a] [role="region"] > [role="link"] > img').attributes.src.value;
+    let BigImage = document.querySelector('[data-a] [role="region"] > [role="link"] > img');
+    if (BigImage) BigImage.parentNode.href = BigImage.attributes.src.value;
     new MutationObserver( Mutations => {
       for (let Mutation of Mutations) if (Mutation.attributeName === "href") { rwLink(Mutation.target) } else {
         if (Mutation.target === document.querySelector('[data-a] [role="region"] > [role="link"] > img')) Mutation.target.parentNode.href = Mutation.target.attributes.src.value;
