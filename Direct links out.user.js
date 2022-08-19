@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         3.3
+// @version         3.4
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
@@ -210,9 +210,8 @@ else if (/(^|\.)car\.ru$/i.test(HostName)) {
     function ChangeTagName(SelectedElement) {
       let NewElement = document.createElement('a');
       for (let Attribute of SelectedElement.attributes) NewElement.setAttribute(Attribute.name, Attribute.value);
-      let onclick = NewElement.getAttribute('onclick');
+      let onclick = NewElement.getAttribute('onclick');  NewElement.removeAttribute('onclick');
       NewElement.setAttribute('href', onclick.slice(onclick.indexOf("href='") + 6, onclick.lastIndexOf("'")));
-      NewElement.removeAttribute('onclick');
       NewElement.innerHTML = SelectedElement.innerHTML;
       SelectedElement.parentNode.replaceChild(NewElement, SelectedElement);
     }
@@ -323,17 +322,15 @@ else if (/tumblr/i.test(HostName)) {
 else if (/twitter/i.test(HostName)) {
   rwLink = link => {
     if (link.href.includes('/t.co/')) {
-      if (/^((ht|f)tp|magnet|ed2k)/i.test(link.text)) { link.href = link.text.replace('…', ''); }
-//      не срабатывает, попробовать set interval:            Content Security Policy?
-//    else {
+      if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.text)) { link.href = link.text.replace('…', '') }
+      else {
+        //  If Content Security Policy in FireFox is buggy, then put "security.csp.enable = false" in about:config.
+        fetch(link.href).then(Response => Response.text()).then(Text => link.href = Text.replace(/.+\<title\>/i, '').replace(/\<\/title.+/i, ''));
+        //  Попробовать с функцией async ( ...
 //      console.log('111 Pre_fetch 111');
 //      link.href = (await (await fetch(link.href)).text()).replace(/.+\<title\>/i, '').replace(/\<\/title.+/i, '');
 //      console.log('222 Post_fetch 222');
-//    }
-//      let IntervalID = setInterval( () => {
-//        link.href = link.firstChild.attributes.src.value;
-//        if (/^(ht|f)tp/i.test(link.href)) clearInterval(IntervalID);
-//      }, 500)
+      }
     }
   }
 }
