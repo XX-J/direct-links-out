@@ -1,4 +1,4 @@
-# ![logo](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png) Direct links out v3.3
+# ![logo](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png) Direct links out v3.4
 ![Userscript](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js) that removes all this "You are leaving our site..." and other redirection stuff from links.
 
 - A clean view of the links
