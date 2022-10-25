@@ -2,12 +2,14 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         3.4
+// @version         4.0
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
-// @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
-// @update          https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 // @author          nokeya & XX-J...
+// @homepageURL     https://github.com/XX-J/Direct-links-out
+// @run-at          document-start
+// @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
+// @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 //   4PDA
 // @include         *://4pda.*
 // @include         *://*.4pda.*
@@ -69,6 +71,9 @@
 // @include         *://*.kickasstorrents.pw/*
 // @include         *://kickassto.co/*
 // @include         *://*.kickassto.co/*
+//   LinkedIn
+// @include         *://linkedin.com/*
+// @include         *://*.linkedin.com/*
 //   LiveInternet
 // @include         *://liveinternet.ru/*
 // @include         *://*.liveinternet.ru/*
@@ -122,6 +127,9 @@
 //   Taker
 // @include         *://taker.im/*
 // @include         *://*.taker.im/*
+//   Telegram
+// @include         *://t.me/*
+// @include         *://*.t.me/*
 //   Tumblr
 // @include         *://tumblr.com/*
 // @include         *://*.tumblr.com/*
@@ -160,12 +168,12 @@
 
 let RemoveAttributes, RemoveClasses;
 let Anchor, ReplacerAnchor = '', After, ReplacerAfter = '';
-const Location = window.location, HostName = window.location.hostname;
+let HostName = window.location.hostname, Location = window.location.href;
 
 //   Simple rewrite link
 function rwSimple(link) {
   if (RemoveAttributes) for (let RemoveAttribute of RemoveAttributes) link.removeAttribute(RemoveAttribute);
-  if (RemoveClasses) RemoveClasses.forEach( RemoveClass => link.classList.remove(RemoveClass));
+  if (RemoveClasses) for (let RemoveClass of RemoveClasses) link.classList.remove(RemoveClass);
   if (/^((ht|f)tp|magnet|ed2k)/i.test(link.href)) {
     if (Anchor && Anchor.test(link.href)) {
       link.href = decodeURIComponent(link.href).replace(Anchor, ReplacerAnchor);
@@ -195,8 +203,8 @@ let rwAll = () => {
 
 //   Determine anchors, functions and observers:
 
-if (/4pda|instagram/i.test(HostName)) {
-  Anchor = /.+u=/i;  After = /&e=.*/i;
+if (/4pda|facebook|instagram|messenger/i.test(HostName)) {
+  Anchor = /.+u=/i;  After = /[?&](e|h|fbclid)=.*/i;
 }
 else if (/adguard|github/i.test(HostName)) {
   Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
@@ -229,29 +237,22 @@ else if (/(^|\.)car\.ru$/i.test(HostName)) {
   }
 }
 else if (/danieldefo/i.test(HostName)) {
-  rwLink = link => { link.removeAttribute('data-proxy-href') }
+  RemoveAttributes = ['data-proxy-href'];
 }
 else if (/deviantart/i.test(HostName)) {
   Anchor = /.+outgoing\?/i;
 }
 else if (/disq/i.test(HostName)) {
-  Anchor = /.+url=/i;  After = /:[^.]{9,}$/;
+  Anchor = /.+[?&]url=/i;  After = /:[^.]{9,}$/;
 }
 else if (/electrotransport|fishki|liveinternet|oszone|pixiv|rambler|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
-  Anchor = /.+url=/i;
-}
-else if (/facebook|messenger/i.test(HostName)) {
-  Anchor = /.+u=/i;  After = /[?&](h|fbclid)=.*/i;
-  rwLink = link => {
-    if (/referrer_log/i.test(link.onclick)) { link.removeAttribute('onclick'); link.removeAttribute('onmouseover') }
-    rwSimple(link);
-  }
+  Anchor = /.+[?&]url=/i;
 }
 else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
 }
 else if (/\/\/(www\.)?google\.(.(?![?&]tbm=))+$/i.test(Location)) {
-  rwLink = link => { for (let RemoveAttribute of ['data-jsarwt', 'data-usg', 'data-ved']) link.removeAttribute(RemoveAttribute) }
+  RemoveAttributes = ['data-jsarwt', 'data-usg', 'data-ved'];
 }
 else if (/\/\/(www\.)?google\..+[?&]tbm=isch/i.test(Location)) {
   Anchor = /.+\?imgurl=/i;  After = /&imgrefurl=.*/i;
@@ -284,6 +285,9 @@ else if (/kickassto/i.test(HostName)) {
   Anchor = /.+confirm\/url\//i;
   rwLink = link => { if (Anchor.test(link.href)) rwSimple(link) }
 }
+else if (/linkedin/i.test(HostName)) {
+  Anchor = /.+[?&]url=/i;  After = /&(trk|messageThreadUrn)=.*/i;
+}
 else if (/otvet\.mail\.ru/i.test(HostName)) {
   rwLink = link => { if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.getAttribute('href')) && !/(^|\.)mail\.ru$/i.test(link.hostname)) link.rel = "301" }
 }
@@ -311,10 +315,14 @@ else if (/rutracker/i.test(HostName)) {
   }
 }
 else if (/slack/i.test(HostName)) {
-  rwLink = link => { link.removeAttribute('onclick'); link.removeAttribute('onmouseover') }
+  RemoveAttributes = ['onclick', 'onmouseover'];
 }
 else if (/taker/i.test(HostName)) {
   Anchor = /.+phpBB2\/goto\//i;
+}
+else if (/(^|\.)t\.me$/i.test(HostName)) {
+  RemoveAttributes = ['onclick'];
+  Anchor = /.+url=/i;  After = /&(amp|rhash)[;=].*/i;
 }
 else if (/tumblr/i.test(HostName)) {
   Anchor = /.+redirect\?z=/i;  After = /&t=.*/i;
@@ -340,13 +348,13 @@ else if (/upwork/i.test(HostName)) {
 else if (/vk|zoon/i.test(HostName)) {
   Anchor = /.+to=/i;  After = /[?&](cc_key|from_content|post|hash)=.*/i;
 }
-else if (/yandex\.[^.]{1,4}\/search/i.test(Location)) {
-  rwLink = link => { link.removeAttribute('data-counter') }
+else if (/yandex\.[^/]{1,6}\/search/i.test(Location)) {
+  RemoveAttributes = ['data-counter'];
 }
-else if (/yandex\.[^.]{1,4}\/images/i.test(Location)) {
+else if (/yandex\.[^/]{1,6}\/images/i.test(Location)) {
   Anchor = /.+&img_url=/i;  After = /&text=.*/i;
 }
-else if (/yandex\.[^.]{1,4}\/news/i.test(Location)) {
+else if (/yandex\.[^/]{1,6}\/news/i.test(Location)) {
   After = /[?&]utm_source=.*/i;
 }
 else if (/yaplakal/i.test(HostName)) {
@@ -356,4 +364,9 @@ else if (/youtube/i.test(HostName)) {
   Anchor = /.+q=/i;  After = /&(redir_token|event|v)=.*/i;
 }
 
-rwAll();
+//   Redirecting wrong link to right link from outer app.
+if (window == window.top && Anchor && Anchor.test(Location)) {
+  Location = Location.replace(Anchor, ReplacerAnchor);
+  if (After && After.test(Location)) Location = Location.replace(After, ReplacerAfter);
+  window.location = Location;
+} else document.addEventListener('DOMContentLoaded', rwAll);
