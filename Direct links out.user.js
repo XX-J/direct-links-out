@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.0
+// @version         4.1
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -152,8 +152,6 @@
 // @include         *://*.yandex.*/search/*
 // @include         *://yandex.*/images/*
 // @include         *://*.yandex.*/images/*
-// @include         *://yandex.*/news/*
-// @include         *://*.yandex.*/news/*
 //   ЯПлакалъ
 // @include         *://yaplakal.com/*
 // @include         *://*.yaplakal.com/*
@@ -353,9 +351,6 @@ else if (/yandex\.[^/]{1,6}\/search/i.test(Location)) {
 }
 else if (/yandex\.[^/]{1,6}\/images/i.test(Location)) {
   Anchor = /.+&img_url=/i;  After = /&text=.*/i;
-}
-else if (/yandex\.[^/]{1,6}\/news/i.test(Location)) {
-  After = /[?&]utm_source=.*/i;
 }
 else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
