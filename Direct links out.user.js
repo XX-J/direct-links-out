@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.1
+// @version         4.2
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -250,7 +250,7 @@ else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
 }
 else if (/\/\/(www\.)?google\.(.(?![?&]tbm=))+$/i.test(Location)) {
-  RemoveAttributes = ['data-jsarwt', 'data-usg', 'data-ved'];
+  RemoveAttributes = ['data-jsarwt', 'data-usg', 'data-ved', 'ping'];
 }
 else if (/\/\/(www\.)?google\..+[?&]tbm=isch/i.test(Location)) {
   Anchor = /.+\?imgurl=/i;  After = /&imgrefurl=.*/i;
