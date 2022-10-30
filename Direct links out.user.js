@@ -2,12 +2,13 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.2
+// @version         4.3
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
 // @homepageURL     https://github.com/XX-J/Direct-links-out
 // @run-at          document-start
+//   "document-start" may not work in TamperMonkey with option "Experimental -> Inject Mode -> Instant". To resume work change option for script: "Installed Userscripts -> Direct links out -> Settings -> General -> Run at -> document-body".
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
 // @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 //   4PDA
@@ -202,7 +203,7 @@ let rwAll = () => {
 //   Determine anchors, functions and observers:
 
 if (/4pda|facebook|instagram|messenger/i.test(HostName)) {
-  Anchor = /.+u=/i;  After = /[?&](e|h|fbclid)=.*/i;
+  Anchor = /.+[?&]u=/i;  After = /[?&](e|h|fbclid)=.*/i;
 }
 else if (/adguard|github/i.test(HostName)) {
   Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
@@ -290,7 +291,8 @@ else if (/otvet\.mail\.ru/i.test(HostName)) {
   rwLink = link => { if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.getAttribute('href')) && !/(^|\.)mail\.ru$/i.test(link.hostname)) link.rel = "301" }
 }
 else if (/mozilla/i.test(HostName)) {
-  Anchor = /.+outgoing.prod.mozaws.net\/v.\/[0-9a-zA-Z]+\//i;  After = /[?&]utm_content=.*/i;
+  //   To allow extensions to work on sites from FireFox "black list" (like AMO) clean this "black list" by set `extensions.webextensions.restrictedDomains = ""`  and  `privacy.resistFingerprinting.block_mozAddonManager = true` in `about:config`.
+  Anchor = /.+\.outgoing\.[^/]+\/v.\/[^/]+\//i;  After = /[?&]utm_content=.*/i;
 }
 else if (/mysku/i.test(HostName)) {
   Anchor = /.+\?r=/i;  After = /&key=.*/i;
@@ -330,7 +332,7 @@ else if (/twitter/i.test(HostName)) {
     if (link.href.includes('/t.co/')) {
       if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.text)) { link.href = link.text.replace('…', '') }
       else {
-        //  If Content Security Policy in FireFox is buggy, then put "security.csp.enable = false" in about:config.
+        //   If Content Security Policy in FireFox is buggy, then put `security.csp.enable = false` in `about:config`.
         fetch(link.href).then(Response => Response.text()).then(Text => link.href = Text.replace(/.+\<title\>/i, '').replace(/\<\/title.+/i, ''));
         //  Попробовать с функцией async ( ...
 //      console.log('111 Pre_fetch 111');
