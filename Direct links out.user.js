@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.3
+// @version         4.3.1
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -125,6 +125,9 @@
 // @include         *://steamcommunity.com/*
 // @include         *://*.steamcommunity.com/*
 // @include         *://*.steampowered.com/*
+//   SubscribeStar
+// @include         *://subscribestar.*
+// @include         *://*.subscribestar.*
 //   Taker
 // @include         *://taker.im/*
 // @include         *://*.taker.im/*
@@ -316,6 +319,15 @@ else if (/rutracker/i.test(HostName)) {
 }
 else if (/slack/i.test(HostName)) {
   RemoveAttributes = ['onclick', 'onmouseover'];
+}
+else if (/subscribestar/i.test(HostName)) {
+  rwLink = link => {
+      let real = link.dataset.href;
+      if(real) {
+          link.href = real;
+          delete link.dataset.href;
+      }
+  }
 }
 else if (/taker/i.test(HostName)) {
   Anchor = /.+phpBB2\/goto\//i;
