@@ -2,196 +2,155 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.3
+// @version         4.5
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
 // @homepageURL     https://github.com/XX-J/Direct-links-out
 // @run-at          document-start
-//   "document-start" may not work in TamperMonkey with option "Experimental -> Inject Mode -> Instant". To resume work change option for script: "Installed Userscripts -> Direct links out -> Settings -> General -> Run at -> document-body".
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
 // @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 //   4PDA
-// @include         *://4pda.*
-// @include         *://*.4pda.*
+// @include         /^https?://([^./]+\.)*4pda\.[^./]+//
 //   AdGuard (forum)
-// @include         *://forum.adguard.com/*
+// @match           *://forum.adguard.com/*
 //   Большой вопрос
-// @include         *://bolshoyvopros.ru/*
-// @include         *://*.bolshoyvopros.ru/*
+// @match           *://*.bolshoyvopros.ru/*
 //   Car.ru
-// @include         *://car.ru/*
-// @include         *://*.car.ru/*
+// @match           *://*.car.ru/*
 //   DanielDefo
-// @include         *://danieldefo.ru/*
-// @include         *://*.danieldefo.ru/*
+// @match           *://*.danieldefo.ru/*
 //   DeviantArt
-// @include         *://deviantart.com/*
-// @include         *://*.deviantart.com/*
-//   Disq.us
-// @include         *://disq.us/*
-// @include         *://*.disq.us/*
-// @include         *://disqus.com/*
-// @include         *://*.disqus.com/*
+// @match           *://*.deviantart.com/*
+//   Disqus
+// @match           *://*.disq.us/*
+// @match           *://*.disqus.com/*
 //   ElectroTransport
-// @include         *://electrotransport.ru/*
+// @match           *://electrotransport.ru/*
 //   Facebook
-// @include         *://facebook.com/*
-// @include         *://*.facebook.com/*
-// @include         *://messenger.com/*
-// @include         *://*.messenger.com/*
+// @match           *://*.facebook.com/*
 //   Ferra.ru
-// @include         *://*.ferra.ru/*
+// @match           *://*.ferra.ru/*
 //   Фишки
-// @include         *://fishki.net/*
-// @include         *://*.fishki.net/*
+// @match           *://*.fishki.net/*
 //   ForumAvia
-// @include         *://*.forumavia.ru/*
+// @match           *://*.forumavia.ru/*
 //   GitHub
-// @include         *://github.com/*
-// @include         *://*.github.io/*
+// @match           *://github.com/*
+// @match           *://*.github.io/*
 //   Google
-// @include         *://google.*
-// @include         *://www.google.*
-// @include         *://news.google.*
+// @include         /^https?://(www|news)\.google(\.com)?\.[^./]+//
 //   Instagram
-// @include         *://instagram.com/*
-// @include         *://*.instagram.com/*
+// @match           *://*.instagram.com/*
 //   iXBT
-// @include         *://ixbt.com/*
-// @include         *://*.ixbt.com/*
+// @match           *://*.ixbt.com/*
 //   JoyReactor
-// @include         *://joyreactor.cc/*
-// @include         *://*.joyreactor.cc/*
-// @include         *://reactor.cc/*
-// @include         *://*.reactor.cc/*
-// @include         *://joyreactor.com/*
-// @include         *://*.joyreactor.com/*
+// @match           *://*.joyreactor.cc/*
+// @match           *://*.reactor.cc/*
+// @match           *://*.joyreactor.com/*
 //   Kickass Torrents
-// @include         *://kickasstorrents.pw/*
-// @include         *://*.kickasstorrents.pw/*
-// @include         *://kickassto.co/*
-// @include         *://*.kickassto.co/*
+// @match           *://*.kickasstorrents.pw/*
+// @match           *://*.kickassto.co/*
 //   LinkedIn
-// @include         *://linkedin.com/*
-// @include         *://*.linkedin.com/*
+// @match           *://*.linkedin.com/*
 //   LiveInternet
-// @include         *://liveinternet.ru/*
-// @include         *://*.liveinternet.ru/*
+// @match           *://*.liveinternet.ru/*
 //   LRepacks
-// @include         *://lrepacks.*
-// @include         *://*.lrepacks.*
+// @include         /^https?://([^./]+\.)*lrepacks\.[^./]+//
 //   Ответы Mail.ru
-// @include         *://otvet.mail.ru/*
+// @match           *://otvet.mail.ru/*
+//   Messenger
+// @match           *://*.messenger.com/*
 //   Addons.Mozilla.Org
-// @include         *://addons.mozilla.org/*
+// To allow extensions to work on sites from FireFox "black list" (like AMO) clean this "black list" by set `extensions.webextensions.restrictedDomains = ""`  and  `privacy.resistFingerprinting.block_mozAddonManager = true` in `about:config`.
+// @match           *://addons.mozilla.org/*
 //   MySKU
-// @include         *://mysku.ru/*
+// @match           *://mysku.ru/*
 //   Одноклассники
-// @include         *://ok.ru/*
-// @include         *://*.ok.ru/*
+// @match           *://*.ok.ru/*
 //   OSzone
-// @include         *://oszone.net/*
-// @include         *://*.oszone.net/*
+// @match           *://*.oszone.net/*
 //   Picarto
-// @include         *://picarto.tv/*
-// @include         *://*.picarto.tv/*
+// @match           *://*.picarto.tv/*
 //   Pixiv
-// @include         *://pixiv.net/*
-// @include         *://*.pixiv.net/*
+// @match           *://*.pixiv.net/*
 //   PlayGround
-// @include         *://playground.ru/*
-// @include         *://*.playground.ru/*
+// @match           *://*.playground.ru/*
 //   Рамблер
-// @include         *://rambler.ru/*
-// @include         *://*.rambler.ru/*
+// @match           *://*.rambler.ru/*
 //   Repack.me
-// @include         *://repack.me/*
-// @include         *://*.repack.me/*
+// @match           *://*.repack.me/*
 //   RsLoad
-// @include         *://rsload.net/*
-// @include         *://*.rsload.net/*
+// @match           *://*.rsload.net/*
 //   RuBattle.net
-// @include         *://rubattle.net/*
-// @include         *://*.rubattle.net/*
+// @match           *://*.rubattle.net/*
 //   RuTracker.org
-// @include         *://rutracker.*
+// @include         /^https?://([^./]+\.)*rutracker\.[^./]+//
 //   Slack
-// @include         *://*.slack.com/*
+// @match           *://*.slack.com/*
 //   SoundCloud
-// @include         *://soundcloud.com/*
-// @include         *://*.soundcloud.com/*
+// @match           *://*.soundcloud.com/*
 //   Steam
-// @include         *://steamcommunity.com/*
-// @include         *://*.steamcommunity.com/*
-// @include         *://*.steampowered.com/*
+// @match           *://*.steamcommunity.com/*
+// @match           *://*.steampowered.com/*
+//   SubscribeStar
+// @match           *://*.subscribestar.com/*
 //   Taker
-// @include         *://taker.im/*
-// @include         *://*.taker.im/*
+// @match           *://*.taker.im/*
 //   Telegram
-// @include         *://t.me/*
-// @include         *://*.t.me/*
+// @match           *://*.t.me/*
 //   Tumblr
-// @include         *://tumblr.com/*
-// @include         *://*.tumblr.com/*
+// @match           *://*.tumblr.com/*
 //   Twitter
-// @include         *://twitter.com/*
-// @include         *://*.twitter.com/*
+// @match           *://*.twitter.com/*
 //   Upwork
-// @include         *://upwork.com/*
-// @include         *://*.upwork.com/*
+// @match           *://*.upwork.com/*
 //   USBDev
-// @include         *://usbdev.ru/*
-// @include         *://*.usbdev.ru/*
+// @match           *://*.usbdev.ru/*
 //   ВКонтакте
-// @include         *://vk.com/*
-// @include         *://*.vk.com/*
+// @match           *://*.vk.com/*
 //   Wikimapia
-// @include         *://wikimapia.org/*
+// @match           *://wikimapia.org/*
 //   Яндекс
-// @include         *://yandex.*/search/*
-// @include         *://*.yandex.*/search/*
-// @include         *://yandex.*/images/*
-// @include         *://*.yandex.*/images/*
+// @include         /^https?://([^./]+\.)*yandex(\.com)?\.[^./]+/(search|images)//
 //   ЯПлакалъ
-// @include         *://yaplakal.com/*
-// @include         *://*.yaplakal.com/*
+// @match           *://*.yaplakal.com/*
 //   YouTube
-// @include         *://youtube.com/*
-// @include         *://*.youtube.com/*
+// @match           *://*.youtube.com/*
 //   Zoon
-// @include         *://zoon.ru/*
-// @include         *://*.zoon.ru/*
+// @match           *://*.zoon.ru/*
 // ==/UserScript==
 
 
-let RemoveAttributes, RemoveClasses;
-let Anchor, ReplacerAnchor = '', After, ReplacerAfter = '';
-let HostName = window.location.hostname, Location = window.location.href;
+let RemoveAttributes, Anchor, ReplacerAnchor = '', After;
+let HostName = location.hostname, Location = location.href;
 
-//   Simple rewrite link
-function rwSimple(link) {
-  if (RemoveAttributes) for (let RemoveAttribute of RemoveAttributes) link.removeAttribute(RemoveAttribute);
-  if (RemoveClasses) for (let RemoveClass of RemoveClasses) link.classList.remove(RemoveClass);
-  if (/^((ht|f)tp|magnet|ed2k)/i.test(link.href)) {
-    if (Anchor && Anchor.test(link.href)) {
-      link.href = decodeURIComponent(link.href).replace(Anchor, ReplacerAnchor);
-      if (/^(aHR0c|ZnRw|bWFnbmV0|ZWQya)/.test(link.getAttribute('href'))) link.href = decodeURIComponent(escape(window.atob(link.getAttribute('href'))));
-    }
-    if (After && After.test(link.href)) link.href = decodeURIComponent(link.href).replace(After, ReplacerAfter);
+function rwHRef(link) {
+  if (/http/i.test(link.protocol)) {
+    let HRef = link.href
+    if (Anchor && Anchor.test(HRef)) HRef = decodeURIComponent(HRef).replace(Anchor, ReplacerAnchor);
+    if (After && After.test(HRef)) HRef = decodeURIComponent(HRef).replace(After, '');
+    if (/^(aHR0c|ZnRw|bWFnbmV0|ZWQya)/.test(HRef)) HRef = decodeURIComponent(atob(HRef));
+    if (HRef != link.href) link.href = HRef;
   }
 }
 
-let rwLink = rwSimple;
+function rwLink(link) {
+  if (/(ht|f)tp|magnet|ed2k/i.test(link.protocol)) {
+    if (RemoveAttributes && (!Anchor || Anchor.test(link.href)))
+      for (let Attribute of RemoveAttributes) link.removeAttribute(Attribute);
+    rwHRef(link);
+  }
+}
 
-let rwAll = () => {
-  for (let AnchorElement of document.querySelectorAll('a')) rwLink(AnchorElement);
+function rwAll() {
+  for (let link of document.links) rwLink(link);
   new MutationObserver( Mutations => {
     for (let Mutation of Mutations) {
       for (let Node of Mutation.addedNodes) {
         if (Node instanceof HTMLElement) {
           if (Node instanceof HTMLAnchorElement) rwLink(Node);
-          for (let AnchorElement of Node.querySelectorAll('a')) rwLink(AnchorElement);
+          for (let link of Node.querySelectorAll('a')) rwLink(link);
         }
       }
       if (Mutation.type === "attributes") rwLink(Mutation.target);
@@ -242,37 +201,42 @@ else if (/deviantart/i.test(HostName)) {
   Anchor = /.+outgoing\?/i;
 }
 else if (/disq/i.test(HostName)) {
-  Anchor = /.+[?&]url=/i;  After = /:[^.]{9,}$/;
+  Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
 }
-else if (/electrotransport|fishki|liveinternet|oszone|pixiv|rambler|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
+else if (/electrotransport|fishki|liveinternet|oszone|pixiv|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
 }
 else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
 }
-else if (/\/\/(www\.)?google\.(.(?![?&]tbm=))+$/i.test(Location)) {
+else if (/\/\/www\.google\.[^/]+\/searc((?![^=][?&]tbm=(isch|shop)).)+$/i.test(Location)) {
   RemoveAttributes = ['data-jsarwt', 'data-usg', 'data-ved', 'ping'];
 }
-else if (/\/\/(www\.)?google\..+[?&]tbm=isch/i.test(Location)) {
-  Anchor = /.+\?imgurl=/i;  After = /&imgrefurl=.*/i;
+else if (/\/\/www\.google\..+[^=][?&]tbm=isch/i.test(Location)) {
+  Anchor = /.+[?&](img)?url=/i;  After = /&(psig|imgrefurl)=.*/i;
   rwAll = () => {
-    let BigImage = document.querySelector('[data-a] [role="region"] > [role="link"] > img');
-    if (BigImage) BigImage.parentNode.href = BigImage.attributes.src.value;
     new MutationObserver( Mutations => {
       for (let Mutation of Mutations) if (Mutation.attributeName === "href") { rwLink(Mutation.target) } else {
-        if (Mutation.target === document.querySelector('[data-a] [role="region"] > [role="link"] > img')) Mutation.target.parentNode.href = Mutation.target.attributes.src.value;
+        if (Mutation.target === document.querySelector('[data-hp]   div:not([aria-hidden="true"]) > c-wiz   [role="region"] > [role="link"] > img')) {
+          Mutation.target.parentNode.href = Mutation.target.attributes.src.value;
+          Mutation.target.parentNode.setAttribute('rlhc', 1);
+        }
       }
     }).observe( document.body, { attributeFilter: ['href', 'src'], subtree: true });
   }
 }
+else if (/\/\/www\.google\..+[^=]([?&]tbm=shop|\/shopping)/i.test(Location)) {
+  Anchor = /.+url\?(url|q)=/i;  After = /&(rct|sa)=.*/i;
+}
 else if (/news\.google/i.test(HostName)) {
   //   Rid of Event Listener 'click'.
   rwLink = link => {
-    if (link.hasAttribute('jslog')) {
-      let jslog = link.getAttribute('jslog');  link.removeAttribute('jslog');
-      jslog = jslog.slice(jslog.indexOf(':') + 1, jslog.lastIndexOf(';')).replace(/(-|\.)/g, '+').replace(/_/g, '/');
-      jslog = unescape(window.atob(jslog).replace(/\\u/g, '%u'));
+    let jslog = link.getAttribute('jslog');
+    if (/5:/.test(jslog)) {
+      jslog = jslog.slice(jslog.indexOf(':') + 1, jslog.lastIndexOf(';')).replace(/[-.]/g, '+').replace(/_/g, '/');
+      jslog = unescape(atob(jslog).replace(/\\u/g, '%u'));
       link.href = jslog.slice(jslog.indexOf('"') + 1, jslog.lastIndexOf('"'));
+      link.removeAttribute('jslog');
     }
   }
 }
@@ -282,33 +246,40 @@ else if (/ixbt/i.test(HostName)) {
 else if (/kickassto/i.test(HostName)) {
   RemoveAttributes = ['class'];
   Anchor = /.+confirm\/url\//i;
-  rwLink = link => { if (Anchor.test(link.href)) rwSimple(link) }
 }
 else if (/linkedin/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /&(trk|messageThreadUrn)=.*/i;
 }
 else if (/otvet\.mail\.ru/i.test(HostName)) {
-  rwLink = link => { if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.getAttribute('href')) && !/(^|\.)mail\.ru$/i.test(link.hostname)) link.rel = "301" }
+  Anchor = /.+\?externalLink=/i;
+  rwLink = link => {
+    if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.getAttribute('href')) &&
+      !/(^|\.)mail\.ru$/i.test(link.hostname)) link.rel = "301"
+  }
 }
 else if (/mozilla/i.test(HostName)) {
-  //   To allow extensions to work on sites from FireFox "black list" (like AMO) clean this "black list" by set `extensions.webextensions.restrictedDomains = ""`  and  `privacy.resistFingerprinting.block_mozAddonManager = true` in `about:config`.
   Anchor = /.+\.outgoing\.[^/]+\/v.\/[^/]+\//i;  After = /[?&]utm_content=.*/i;
 }
 else if (/mysku/i.test(HostName)) {
   Anchor = /.+\?r=/i;  After = /&key=.*/i;
 }
-else if (/ok/i.test(HostName)) {
+else if (/(^|\.)ok\.ru$/i.test(HostName)) {
   Anchor = /.+st\.link=/i;  After = /&st\.name=.*/i;
 }
 else if (/picarto/i.test(HostName)) {
   Anchor = /.+referrer\?go=/i;  After = /&ref=.*/i;
 }
 else if (/playground|rubattle/i.test(HostName)) {
-  Anchor = /w.+\/redirect\/(https?\/)?/i;
+  rwHRef = link => {
+    if (/^http.+\/redirect\//i.test(link.href)) link.href = decodeURIComponent(link.href)
+      .replace(/.+\/redirect\//i, '').replace(/[^/]+/, m => /\./.test(m) ? "http://" + m : m + ":/")
+  }
+}
+else if (/rambler/i.test(HostName)) {
+  Anchor = /.+[?&]redirect_url=/i;  After = /[?&]utm_source=.*/i;
 }
 else if (/rutracker/i.test(HostName)) {
   rwAll = () => {
-    for (let AnchorElement of document.querySelectorAll('.p-ext-link')) AnchorElement.classList.remove('p-ext-link');
     new MutationObserver( Mutations => {
       for (let Mutation of Mutations) if (Mutation.target.classList.contains('p-ext-link')) Mutation.target.classList.remove('p-ext-link');
     }).observe( document.body, { attributeFilter: ['class'], subtree: true });
@@ -317,20 +288,24 @@ else if (/rutracker/i.test(HostName)) {
 else if (/slack/i.test(HostName)) {
   RemoveAttributes = ['onclick', 'onmouseover'];
 }
+else if (/subscribestar/i.test(HostName)) {
+  RemoveAttributes = ['data-href'];
+  Anchor = /.+\?url=/i;  After = /\n/g;
+}
 else if (/taker/i.test(HostName)) {
   Anchor = /.+phpBB2\/goto\//i;
 }
 else if (/(^|\.)t\.me$/i.test(HostName)) {
   RemoveAttributes = ['onclick'];
-  Anchor = /.+url=/i;  After = /&(amp|rhash)[;=].*/i;
+  Anchor = /.+\?url=/i;  After = /&(amp|rhash)[;=].*/i;
 }
 else if (/tumblr/i.test(HostName)) {
   Anchor = /.+redirect\?z=/i;  After = /&t=.*/i;
 }
 else if (/twitter/i.test(HostName)) {
   rwLink = link => {
-    if (link.href.includes('/t.co/')) {
-      if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.text)) { link.href = link.text.replace('…', '') }
+    if (/^https?:\/\/t\.co\//i.test(link.href)) {
+      if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.text)) link.href = link.text.replace('…', '');
       else {
         //   If Content Security Policy in FireFox is buggy, then put `security.csp.enable = false` in `about:config`.
         fetch(link.href).then(Response => Response.text()).then(Text => link.href = Text.replace(/.+\<title\>/i, '').replace(/\<\/title.+/i, ''));
@@ -348,22 +323,19 @@ else if (/upwork/i.test(HostName)) {
 else if (/vk|zoon/i.test(HostName)) {
   Anchor = /.+to=/i;  After = /[?&](cc_key|from_content|post|hash)=.*/i;
 }
-else if (/yandex\.[^/]{1,6}\/search/i.test(Location)) {
-  RemoveAttributes = ['data-counter'];
+else if (/yandex\.[^/]+\/search/i.test(Location)) {
+  RemoveAttributes = ['data-counter', 'data-log-node'];
 }
-else if (/yandex\.[^/]{1,6}\/images/i.test(Location)) {
+else if (/yandex\.[^/]+\/images/i.test(Location)) {
   Anchor = /.+&img_url=/i;  After = /&text=.*/i;
 }
 else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
 }
 else if (/youtube/i.test(HostName)) {
-  Anchor = /.+q=/i;  After = /&(redir_token|event|v)=.*/i;
+  Anchor = /.+[?&]q=/i;  After = /&(redir_token|event|v)=.*/i;
 }
 
 //   Redirecting wrong link to right link from outer app.
-if (window == window.top && Anchor && Anchor.test(Location)) {
-  Location = Location.replace(Anchor, ReplacerAnchor);
-  if (After && After.test(Location)) Location = Location.replace(After, ReplacerAfter);
-  window.location = Location;
-} else document.addEventListener('DOMContentLoaded', rwAll);
+if (window == top) rwHRef(location);
+document.readyState == "loading" ? document.addEventListener('DOMContentLoaded', rwAll, { once: true }) : rwAll();
