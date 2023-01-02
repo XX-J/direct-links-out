@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.6
+// @version         4.7
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -85,7 +85,7 @@
 //   RuBattle.net
 // @match           *://*.rubattle.net/*
 //   RuTracker.org
-// @include         /^https?://([^./]+\.)*rutracker\.[^./]+//
+// @include         *://rutracker.tld/*
 //   Slack
 // @match           *://*.slack.com/*
 //   SoundCloud
@@ -229,7 +229,6 @@ else if (/\/\/www\.google\..+[^=]([?&]tbm=shop|\/shopping)/i.test(Location)) {
   Anchor = /.+url\?(url|q)=/i;  After = /&(rct|sa)=.*/i;
 }
 else if (/news\.google/i.test(HostName)) {
-  //   Rid of Event Listener 'click'.
   rwLink = link => {
     let jslog = link.getAttribute('jslog');
     if (/5:/.test(jslog)) {
@@ -237,6 +236,7 @@ else if (/news\.google/i.test(HostName)) {
       jslog = unescape(atob(jslog).replace(/\\u/g, '%u'));
       link.href = jslog.slice(jslog.indexOf('"') + 1, jslog.lastIndexOf('"'));
       link.removeAttribute('jslog');
+      link.addEventListener('click', e => e.stopPropagation());
     }
   }
 }
@@ -303,12 +303,13 @@ else if (/twitter/i.test(HostName)) {
     if (/^https?:\/\/t\.co\//i.test(link.href)) {
       if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.text)) link.href = link.text.replace('…', '');
       else {
-        //   If Content Security Policy in FireFox is buggy, then put `security.csp.enable = false` in `about:config`.
-        fetch(link.href).then(Response => Response.text()).then(Text => link.href = Text.replace(/.+\<title\>/i, '').replace(/\<\/title.+/i, ''));
-        //  Попробовать с функцией async ( ...
-//      console.log('111 Pre_fetch 111');
-//      link.href = (await (await fetch(link.href)).text()).replace(/.+\<title\>/i, '').replace(/\<\/title.+/i, '');
-//      console.log('222 Post_fetch 222');
+        //   First method:
+//      fetch(link.href).then(Response => Response.text())
+//        .then(Text => link.href = Text.replace(/.+\<title\>|\<\/title.+/ig, ''));
+        //   Second method:
+        (async () => {
+          link.href = (await (await fetch(link.href)).text()).replace(/.+\<title\>|\<\/title.+/ig, '');
+        })(link);
       }
     }
   }
