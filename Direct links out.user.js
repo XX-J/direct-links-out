@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.7
+// @version         4.8
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -11,7 +11,7 @@
 // @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
 // @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 //   4PDA
-// @include         /^https?://([^./]+\.)*4pda\.[^./]+//
+// @include         *://4pda.tld/*
 //   AdGuard (forum)
 // @match           *://forum.adguard.com/*
 //   Большой вопрос
@@ -39,7 +39,8 @@
 // @match           *://github.com/*
 // @match           *://*.github.io/*
 //   Google
-// @include         /^https?://(www|news)\.google(\.com)?\.[^./]+//
+// @include         *://www.google.tld/*
+// @match           *://news.google.com/*
 //   Instagram
 // @match           *://*.instagram.com/*
 //   iXBT
@@ -56,7 +57,7 @@
 //   LiveInternet
 // @match           *://*.liveinternet.ru/*
 //   LRepacks
-// @include         /^https?://([^./]+\.)*lrepacks\.[^./]+//
+// @include         *://lrepacks.tld/*
 //   Ответы Mail.ru
 // @match           *://otvet.mail.ru/*
 //   Messenger
@@ -70,6 +71,8 @@
 // @match           *://*.ok.ru/*
 //   OSzone
 // @match           *://*.oszone.net/*
+//   Overclockers.ru
+// @match           *://overclockers.ru/*
 //   Picarto
 // @match           *://*.picarto.tv/*
 //   Pixiv
@@ -161,8 +164,8 @@ function rwAll() {
 
 //   Determine anchors, functions and observers:
 
-if (/4pda|facebook|instagram|messenger/i.test(HostName)) {
-  Anchor = /.+[?&]u=/i;  After = /[?&](e|h|fbclid)=.*/i;
+if (/4pda/i.test(HostName)) {
+  Anchor = /.+\?u=/i;  After = /&[mnef]=.*/i;
 }
 else if (/adguard|github/i.test(HostName)) {
   Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
@@ -173,21 +176,21 @@ else if (/bolshoyvopros|forumavia/i.test(HostName)) {
 }
 else if (/(^|\.)car\.ru$/i.test(HostName)) {
   rwAll = () => {
-    function ChangeTagName(SelectedElement) {
+    function ChangeTagName(OldElement) {
       let NewElement = document.createElement('a');
-      for (let Attribute of SelectedElement.attributes) NewElement.setAttribute(Attribute.name, Attribute.value);
+      for (let Attribute of OldElement.attributes) NewElement.setAttribute(Attribute.name, Attribute.value);
       let onclick = NewElement.getAttribute('onclick');  NewElement.removeAttribute('onclick');
       NewElement.setAttribute('href', onclick.slice(onclick.indexOf("href='") + 6, onclick.lastIndexOf("'")));
-      NewElement.innerHTML = SelectedElement.innerHTML;
-      SelectedElement.parentNode.replaceChild(NewElement, SelectedElement);
+      NewElement.innerHTML = OldElement.innerHTML;
+      OldElement.parentNode.replaceChild(NewElement, OldElement);
     }
-    for (let SelectedElement of document.querySelectorAll('[onclick*="href"]')) ChangeTagName(SelectedElement);
+    for (let Element of document.querySelectorAll('[onclick*="href"]')) ChangeTagName(Element);
     new MutationObserver( Mutations => {
       for (let Mutation of Mutations) {
         for (let Node of Mutation.addedNodes) {
           if (Node instanceof HTMLElement) {
             if (Node.matches('[onclick*="href"]')) ChangeTagName(Node);
-            for (let SelectedElement of Node.querySelectorAll('[onclick*="href"]')) ChangeTagName(SelectedElement);
+            for (let Element of Node.querySelectorAll('[onclick*="href"]')) ChangeTagName(Element);
           }
         }
       }
@@ -205,6 +208,9 @@ else if (/disq/i.test(HostName)) {
 }
 else if (/electrotransport|fishki|liveinternet|oszone|pixiv|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
+}
+else if (/facebook|instagram|messenger/i.test(HostName)) {
+  Anchor = /.+[?&]u=/i;  After = /[?&](e|h|fbclid)=.*/i;
 }
 else if (/ferra/i.test(HostName)) {
   Anchor = /.+click\/forums_out\//i;
@@ -236,12 +242,20 @@ else if (/news\.google/i.test(HostName)) {
       jslog = unescape(atob(jslog).replace(/\\u/g, '%u'));
       link.href = jslog.slice(jslog.indexOf('"') + 1, jslog.lastIndexOf('"'));
       link.removeAttribute('jslog');
-      link.addEventListener('click', e => e.stopPropagation());
+      link.addEventListener('click', Event => Event.stopPropagation());
     }
   }
 }
 else if (/ixbt/i.test(HostName)) {
-  Anchor = /.+live\/redirect\//i;
+  Anchor = /.+\/live\/redirect\//i;
+  rwLink = link => {
+    if (/\/click\/\?c=/i.test(link.href) && /^((ht|f)tp|magnet|ed2k)/i.test(link.title))
+      link.href = link.title;
+    else if (Anchor.test(link.href)) {
+      link.target = "_blank";
+      rwHRef(link);
+    }
+  }
 }
 else if (/kickassto/i.test(HostName)) {
   RemoveAttributes = ['class'];
@@ -265,6 +279,14 @@ else if (/mysku/i.test(HostName)) {
 }
 else if (/(^|\.)ok\.ru$/i.test(HostName)) {
   Anchor = /.+st\.link=/i;  After = /&st\.name=.*/i;
+}
+else if (/overclockers/i.test(HostName)) {
+  rwLink = link => {
+    if (!link.href && /^((ht|f)tp|magnet|ed2k)/i.test(link.dataset.link)) {
+      link.href = link.dataset.link;
+      link.target = "_blank";
+    }
+  }
 }
 else if (/picarto/i.test(HostName)) {
   Anchor = /.+referrer\?go=/i;  After = /&ref=.*/i;
