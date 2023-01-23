@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.8
+// @version         4.9
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -206,7 +206,7 @@ else if (/deviantart/i.test(HostName)) {
 else if (/disq/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
 }
-else if (/electrotransport|fishki|liveinternet|oszone|pixiv|reactor|repack|rsload|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
+else if (/electrotransport|fishki|liveinternet|oszone|pixiv|reactor|repack|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
 }
 else if (/facebook|instagram|messenger/i.test(HostName)) {
@@ -300,6 +300,9 @@ else if (/playground|rubattle/i.test(HostName)) {
 else if (/rambler/i.test(HostName)) {
   Anchor = /.+[?&]redirect_url=/i;  After = /[?&]utm_source=.*/i;
 }
+else if (/rsload/i.test(HostName)) {
+  Anchor = /.+(\/download\?a(%3A|:)|\?url=)/i;
+}
 else if (/rutracker/i.test(HostName)) {
   rwAll = () => { BB.build_external_link = Obj => { Obj[0].target = "_blank" } }
 }
@@ -344,6 +347,7 @@ else if (/vk|zoon/i.test(HostName)) {
 }
 else if (/yandex\.[^/]+\/search/i.test(Location)) {
   RemoveAttributes = ['data-counter', 'data-log-node'];
+  After = /&ysclid=.*/i;   // ...но лучше переписывать узел видеовыдачи дабы избавиться от слушателя кликов.
 }
 else if (/yandex\.[^/]+\/images/i.test(Location)) {
   Anchor = /.+&img_url=/i;  After = /&text=.*/i;
