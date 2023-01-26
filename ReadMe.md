@@ -1,12 +1,12 @@
-# ![logo](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png) Direct links out v4.8
-![Userscript](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js) that removes all this "You are leaving our site..." and other redirection stuff from links.
+# &nbsp;![logo](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png)irect links out v4.10
+&nbsp;[Userscript](https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js) that removes all this "You are leaving our site..." and other redirection stuff from links.
 
 - A clean view of the links
 - Faster surfing
 - Better anonymity
 <br>
 
-   | Supported | sites: |   
+   | Supported | 52 sites: |   
 -- | --------- | ------ | --
  4PDA | AdGuard (forum) | Большой вопрос | Car.ru
  DanielDefo | DeviantArt | Disqus | ElectroTransport
