@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.9
+// @version         4.10
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -356,7 +356,7 @@ else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
 }
 else if (/youtube/i.test(HostName)) {
-  Anchor = /.+[?&]q=/i;  After = /&(redir_token|event|v)=.*/i;
+  Anchor = /.+[?&]q=/i;  After = /&v=[^&]*$/i;
 }
 
 //   Redirecting wrong link to right link from outer app.
