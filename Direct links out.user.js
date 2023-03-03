@@ -2,13 +2,13 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.10
+// @version         4.11
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
 // @homepageURL     https://github.com/XX-J/Direct-links-out
 // @run-at          document-start
-// @icon            https://raw.githubusercontent.com/XX-J/Direct-links-out/master/icon.png
+// @icon            data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAXUlEQVR42uSRNQKAQAwEF+n49D4cd2dCfZkqMqdSd2ENq3viQQDlQ9gUFj6UcmtVaiYwnlfmI9E4C/SsMG75IsD4Vo0IPtXxSL7U4dL+8w/exlH4mEtciNJv8GkAAEAuRV4BUFYYAAAAAElFTkSuQmCC
 // @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 //   4PDA
 // @include         *://4pda.tld/*
@@ -115,7 +115,7 @@
 //   Wikimapia
 // @match           *://wikimapia.org/*
 //   Яндекс
-// @include         /^https?://([^./]+\.)*yandex(\.com)?\.[^./]+/(search|images)//
+// @include         /^https?://([^./]+\.)*yandex(\.com)?\.[^./]+/search//
 //   ЯПлакалъ
 // @match           *://*.yaplakal.com/*
 //   YouTube
@@ -345,12 +345,9 @@ else if (/upwork/i.test(HostName)) {
 else if (/vk|zoon/i.test(HostName)) {
   Anchor = /.+to=/i;  After = /[?&](cc_key|from_content|post|hash)=.*/i;
 }
-else if (/yandex\.[^/]+\/search/i.test(Location)) {
+else if (/yandex/i.test(HostName)) {
   RemoveAttributes = ['data-counter', 'data-log-node'];
-  After = /&ysclid=.*/i;   // ...но лучше переписывать узел видеовыдачи дабы избавиться от слушателя кликов.
-}
-else if (/yandex\.[^/]+\/images/i.test(Location)) {
-  Anchor = /.+&img_url=/i;  After = /&text=.*/i;
+  Anchor = /.+&img_url=/i;  After = /&(pos|ysclid)=.*/i;
 }
 else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
