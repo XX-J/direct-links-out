@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.12
+// @version         4.13
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -306,8 +306,10 @@ else if (/rsload/i.test(HostName)) {
 else if (/rutracker/i.test(HostName)) {
   rwLink = link => {
     if (link.classList.contains('postLink') &&
-      !/^https?:\/\/(rutracker\.(org|net|nl)\/|www\.youtube\.com\/(?!user)|youtu\.be\/|vimeo\.com\/\d+$|soundcloud\.com\/)/i.test(link.href))
+      !/^https?:\/\/(rutracker\.(org|net|nl)\/|www\.youtube\.com\/(?!user)|youtu\.be\/|vimeo\.com\/\d+$|soundcloud\.com\/)/i.test(link.href)) {
       link.classList.add('p-ext-link-initialized');
+      link.target = "_blank";
+    }
   }
 }
 else if (/slack/i.test(HostName)) {
