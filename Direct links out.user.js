@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.13
+// @version         4.14
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -60,6 +60,8 @@
 // @include         *://lrepacks.tld/*
 //   Ответы Mail.ru
 // @match           *://otvet.mail.ru/*
+//   MCPEDL.com
+// @match           *://mcpedl.com/*
 //   Messenger
 // @match           *://*.messenger.com/*
 //   Addons.Mozilla.Org
@@ -206,7 +208,7 @@ else if (/deviantart/i.test(HostName)) {
 else if (/disq/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
 }
-else if (/electrotransport|fishki|liveinternet|oszone|pixiv|reactor|repack|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
+else if (/electrotransport|fishki|liveinternet|mcpedl|oszone|pixiv|reactor|repack|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
 }
 else if (/facebook|instagram|messenger/i.test(HostName)) {
@@ -359,7 +361,12 @@ else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
 }
 else if (/youtube/i.test(HostName)) {
-  Anchor = /.+[?&]q=/i;  After = /&v=[^&]*$/i;
+  rwHRef = link => {
+    if (/^http.+[?&]q=/i.test(link.href)) {
+      link.href = decodeURIComponent(link.href).replace(/.+[?&]q=/i, '');
+      if (/&v=.*/i.test(link.href)) link.href = link.href.replace(/&v=.*/i, '');
+    }
+  }
 }
 
 //   Redirecting wrong link to right link from outer app.
