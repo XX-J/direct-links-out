@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.14
+// @version         4.15
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -104,6 +104,8 @@
 // @match           *://*.taker.im/*
 //   Telegram
 // @match           *://*.t.me/*
+//   Военное обозрение
+// @match           *://*.topwar.ru/*
 //   Tumblr
 // @match           *://*.tumblr.com/*
 //   Twitter
@@ -208,7 +210,7 @@ else if (/deviantart/i.test(HostName)) {
 else if (/disq/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
 }
-else if (/electrotransport|fishki|liveinternet|mcpedl|oszone|pixiv|reactor|repack|soundcloud|steam|usbdev|wikimapia/i.test(HostName)) {
+else if (/electrotransport|fishki|liveinternet|mcpedl|oszone|pixiv|reactor|repack|soundcloud|steam|topwar|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
 }
 else if (/facebook|instagram|messenger/i.test(HostName)) {
