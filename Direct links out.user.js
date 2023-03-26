@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.15
+// @version         4.16
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -58,7 +58,8 @@
 // @match           *://*.liveinternet.ru/*
 //   LRepacks
 // @include         *://lrepacks.tld/*
-//   Ответы Mail.ru
+//   Mail.ru
+// @match           *://my.mail.ru/*
 // @match           *://otvet.mail.ru/*
 //   MCPEDL.com
 // @match           *://mcpedl.com/*
@@ -268,11 +269,13 @@ else if (/kickassto/i.test(HostName)) {
 else if (/linkedin/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /&(trk|messageThreadUrn)=.*/i;
 }
+else if (/my\.mail\.ru/i.test(HostName)) {
+  Anchor = /.+\?u=/i;  After = /&c=.*/i;
+}
 else if (/otvet\.mail\.ru/i.test(HostName)) {
   Anchor = /.+\?externalLink=/i;
   rwLink = link => {
-    if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.getAttribute('href')) &&
-      !/(^|\.)mail\.ru$/i.test(link.hostname)) link.rel = "301"
+    if (/^((ht|f)tps?:\/\/((?!mail\.ru\/)[^/])+\/|magnet|ed2k)/i.test(link.href)) link.rel = "301";
   }
 }
 else if (/mozilla/i.test(HostName)) {
