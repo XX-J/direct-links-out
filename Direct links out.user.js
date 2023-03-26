@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.16
+// @version         4.17
 // @description     Removes all "You are leaving our site..." and redirection stuff from links.
 // @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -69,16 +69,16 @@
 // To allow extensions to work on sites from FireFox "black list" (like AMO) clean this "black list" by set `extensions.webextensions.restrictedDomains = ""`  and  `privacy.resistFingerprinting.block_mozAddonManager = true` in `about:config`.
 // @match           *://addons.mozilla.org/*
 //   MySKU
-// @match           *://mysku.ru/*
+// @include         *://mysku.tld/*
 //   Одноклассники
 // @match           *://*.ok.ru/*
 //   OSzone
 // @match           *://*.oszone.net/*
 //   Overclockers.ru
 // @match           *://overclockers.ru/*
-//   Picarto
+//   Picarto.tv
 // @match           *://*.picarto.tv/*
-//   Pixiv
+//   pixiv
 // @match           *://*.pixiv.net/*
 //   PlayGround
 // @match           *://*.playground.ru/*
@@ -211,7 +211,7 @@ else if (/deviantart/i.test(HostName)) {
 else if (/disq/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
 }
-else if (/electrotransport|fishki|liveinternet|mcpedl|oszone|pixiv|reactor|repack|soundcloud|steam|topwar|usbdev|wikimapia/i.test(HostName)) {
+else if (/electrotransport|fishki|liveinternet|mcpedl|oszone|reactor|repack|soundcloud|steam|topwar|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
 }
 else if (/facebook|instagram|messenger/i.test(HostName)) {
@@ -297,6 +297,9 @@ else if (/overclockers/i.test(HostName)) {
 }
 else if (/picarto/i.test(HostName)) {
   Anchor = /.+referrer\?go=/i;  After = /&ref=.*/i;
+}
+else if (/pixiv/i.test(HostName)) {
+  Anchor = /.+\/jump\.php\?(url=)?/i;
 }
 else if (/playground|rubattle/i.test(HostName)) {
   rwHRef = link => {
