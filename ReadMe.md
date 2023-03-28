@@ -24,4 +24,4 @@
  [YouTube](https://href.li/?https://www.youtube.com/) | [Zoon](https://href.li/?https://zoon.ru/)
 <br>
 
-&#x2A; To allow extensions to work on sites from FireFox "black list" (like Addons.Mozilla.Org) clean this "black list" by set `extensions.webextensions.restrictedDomains = ""`  and  `privacy.resistFingerprinting.block_mozAddonManager = true` in `about:config`.
+&#x2A; To allow extensions to work on sites from FireFox "black list" (like Addons.Mozilla.Org) clean this "black list" by set &nbsp;`extensions.webextensions.restrictedDomains = ""`&nbsp; and &nbsp;`privacy.resistFingerprinting.block_mozAddonManager = true`&nbsp; on _about:config_ page.
