@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.18
+// @version         4.19
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -340,18 +340,10 @@ else if (/tumblr/i.test(HostName)) {
   Anchor = /.+redirect\?z=/i;  After = /&t=.*/i;
 }
 else if (/twitter/i.test(HostName)) {
-  rwLink = link => {
+  rwLink = async link => {
     if (/^https?:\/\/t\.co\//i.test(link.href)) {
       if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.text)) link.href = link.text.replace('…', '');
-      else {
-        //   First method:
-//      fetch(link.href).then(Response => Response.text())
-//        .then(Text => link.href = Text.replace(/.+\<title\>|\<\/title.+/ig, ''));
-        //   Second method:
-        (async () => {
-          link.href = (await (await fetch(link.href)).text()).replace(/.+\<title\>|\<\/title.+/ig, '');
-        })(link);
-      }
+      else link.href = (await (await fetch(link.href)).text()).replace(/.+\<title\>|\<\/title.+/ig, '');
     }
   }
 }
