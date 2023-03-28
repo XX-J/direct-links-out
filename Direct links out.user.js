@@ -2,9 +2,9 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.17
-// @description     Removes all "You are leaving our site..." and redirection stuff from links.
-// @description:ru  Убирает "Бла-бла-бла, вы покидаете наш сайт..." и переадресацию из ссылок.
+// @version         4.18
+// @description     Removes all this "You are leaving our site..." and other redirection trash from links.
+// @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
 // @homepageURL     https://github.com/XX-J/Direct-links-out
 // @run-at          document-start
@@ -97,11 +97,11 @@
 //   SoundCloud
 // @match           *://*.soundcloud.com/*
 //   Steam
-// @match           *://*.steamcommunity.com/*
 // @match           *://*.steampowered.com/*
+// @match           *://*.steamcommunity.com/*
 //   SubscribeStar
 // @match           *://*.subscribestar.com/*
-//   Taker
+//   Taker.im
 // @match           *://*.taker.im/*
 //   Telegram
 // @match           *://*.t.me/*
@@ -362,8 +362,13 @@ else if (/vk|zoon/i.test(HostName)) {
   Anchor = /.+to=/i;  After = /[?&](cc_key|from_content|post|hash)=.*/i;
 }
 else if (/yandex/i.test(HostName)) {
-  RemoveAttributes = ['data-counter', 'data-log-node'];
-  Anchor = /.+&img_url=/i;  After = /&(pos|ysclid)=.*/i;
+  Anchor = /.+&img_url=/i;  After = /&(pos|rpt|ysclid)=.*/i;
+  rwLink = link => {
+    if (/(ht|f)tp|magnet|ed2k/i.test(link.protocol)) {
+      link.removeAttribute('data-counter');  link.removeAttribute('data-log-node');
+      if (!link.classList.contains('more-button')) rwHRef(link);
+    }
+  }
 }
 else if (/yaplakal/i.test(HostName)) {
   Anchor = /.+go\/\?/i;
