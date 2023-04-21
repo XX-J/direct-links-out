@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.20
+// @version         4.21
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -130,13 +130,13 @@
 // ==/UserScript==
 
 
-let RemoveAttributes, Anchor, ReplacerAnchor = '', After;
+let RemoveAttributes, Anchor, After;
 let HostName = location.hostname, Location = location.href;
 
 function rwHRef(link) {
   if (/http/i.test(link.protocol)) {
     let HRef = link.href
-    if (Anchor && Anchor.test(HRef)) HRef = decodeURIComponent(HRef).replace(Anchor, ReplacerAnchor);
+    if (Anchor && Anchor.test(HRef)) HRef = decodeURIComponent(HRef).replace(Anchor, '');
     if (After && After.test(HRef)) HRef = decodeURIComponent(HRef).replace(After, '');
     if (/^(aHR0c|ZnRw|bWFnbmV0|ZWQya)/.test(HRef)) HRef = decodeURIComponent(atob(HRef));
     if (HRef != link.href) link.href = HRef;
@@ -173,8 +173,10 @@ if (/4pda/i.test(HostName)) {
   Anchor = /.+\?u=/i;  After = /&[mnef]=.*/i;
 }
 else if (/adguard|github/i.test(HostName)) {
-  Anchor = /.+\/AnonymousRedirect\/redirect\.html\?url=/i;
-  ReplacerAnchor = 'https://href.li/?';
+  rwHRef = link => {
+    if (/^http.+\/AnonymousRedirect\/redirect\.html\?url=/i.test(link.href)) link.href = decodeURIComponent(link.href)
+      .replace(/.+\/AnonymousRedirect\/redirect\.html\?url=/i, 'https://href.li/?')
+  }
 }
 else if (/bolshoyvopros|forumavia/i.test(HostName)) {
   Anchor = /.+\?l=/i;  After = /&src=.*/i;
