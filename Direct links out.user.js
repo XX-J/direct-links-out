@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.19
+// @version         4.20
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -227,13 +227,13 @@ else if (/\/\/www\.google\..+[^=][?&]tbm=isch/i.test(Location)) {
   Anchor = /.+[?&](img)?url=/i;  After = /&(psig|imgrefurl)=.*/i;
   rwAll = () => {
     new MutationObserver( Mutations => {
-      for (let Mutation of Mutations) if (Mutation.attributeName === "href") { rwLink(Mutation.target) } else {
-        if (Mutation.target === document.querySelector('[data-hp]   div:not([aria-hidden="true"]) > c-wiz   [role="region"] > [role="link"] > img')) {
-          Mutation.target.parentNode.href = Mutation.target.attributes.src.value;
-          Mutation.target.parentNode.setAttribute('rlhc', 1);
+      for (let Mutation of Mutations) if (Mutation.type === "childList") {
+        if (Mutation.target === document.querySelector('[data-hp] div:not([aria-hidden="true"]) > c-wiz [role="link"]:only-of-type')) {
+          Mutation.target.href = Mutation.target.firstChild.src;
+          Mutation.target.setAttribute("rlhc", 1);
         }
-      }
-    }).observe( document.body, { attributeFilter: ['href', 'src'], subtree: true });
+      } else { rwHRef(Mutation.target) }
+    }).observe( document.body, { childList: true, attributeFilter: ['href'], subtree: true });
   }
 }
 else if (/\/\/www\.google\..+[^=]([?&]tbm=shop|\/shopping)/i.test(Location)) {
