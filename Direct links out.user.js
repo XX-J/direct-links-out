@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.21
+// @version         4.22
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -174,8 +174,11 @@ if (/4pda/i.test(HostName)) {
 }
 else if (/adguard|github/i.test(HostName)) {
   rwHRef = link => {
-    if (/^http.+\/AnonymousRedirect\/redirect\.html\?url=/i.test(link.href)) link.href = decodeURIComponent(link.href)
-      .replace(/.+\/AnonymousRedirect\/redirect\.html\?url=/i, 'https://href.li/?')
+    if (/^http.+\/AnonymousRedirect\/redirect\.html\?url=/i.test(link.href)) {
+      link.href = decodeURIComponent(link.href).replace(/.+\/AnonymousRedirect\/redirect\.html\?url=/i, '');
+      if (!/^https:\/\/href\.li\//i.test(link.href) && !/github\.io/i.test(HostName))
+        link.href = 'https://href.li/?' + link.href;
+    }
   }
 }
 else if (/bolshoyvopros|forumavia/i.test(HostName)) {
