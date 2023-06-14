@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.22
+// @version         4.23
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -372,10 +372,8 @@ else if (/yaplakal/i.test(HostName)) {
 }
 else if (/youtube/i.test(HostName)) {
   rwHRef = link => {
-    if (/^http.+[?&]q=/i.test(link.href)) {
-      link.href = decodeURIComponent(link.href).replace(/.+[?&]q=/i, '');
-      if (/&v=.*/i.test(link.href)) link.href = link.href.replace(/&v=.*/i, '');
-    }
+    if (/^http.+[?&]q=/i.test(link.href))
+      link.href = decodeURIComponent(link.href.replace(/.+[?&]q=|&(v|redir_token|stzid)=.*/ig, ''));
   }
 }
 
