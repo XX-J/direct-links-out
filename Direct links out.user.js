@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.23
+// @version         4.24
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -10,6 +10,8 @@
 // @run-at          document-start
 // @icon            data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAXUlEQVR42uSRNQKAQAwEF+n49D4cd2dCfZkqMqdSd2ENq3viQQDlQ9gUFj6UcmtVaiYwnlfmI9E4C/SsMG75IsD4Vo0IPtXxSL7U4dL+8w/exlH4mEtciNJv8GkAAEAuRV4BUFYYAAAAAElFTkSuQmCC
 // @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
+//   2baksa
+// @include         /^https?://([^./]+\.)*2baksa\.[^./]+//
 //   4PDA
 // @include         *://4pda.tld/*
 //   AdGuard (forum)
@@ -96,6 +98,8 @@
 // @match           *://*.slack.com/*
 //   SoundCloud
 // @match           *://*.soundcloud.com/*
+//   Окно в Петербург
+// @match           *://spb-gid.ru/*
 //   Steam
 // @match           *://*.steampowered.com/*
 // @match           *://*.steamcommunity.com/*
@@ -216,7 +220,7 @@ else if (/deviantart/i.test(HostName)) {
 else if (/disq/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
 }
-else if (/electrotransport|fishki|liveinternet|mcpedl|oszone|reactor|repack|soundcloud|steam|topwar|usbdev|wikimapia/i.test(HostName)) {
+else if (/2baksa|electrotransport|fishki|liveinternet|mcpedl|oszone|reactor|repack|soundcloud|steam|topwar|usbdev|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
 }
 else if (/facebook|instagram|messenger/i.test(HostName)) {
@@ -289,8 +293,8 @@ else if (/mozilla/i.test(HostName)) {
 else if (/mysku/i.test(HostName)) {
   Anchor = /.+\?r=/i;  After = /&key=.*/i;
 }
-else if (/(^|\.)ok\.ru$/i.test(HostName)) {
-  Anchor = /.+st\.link=/i;  After = /&st\.name=.*/i;
+else if (/(^|\.)ok\.ru$|spb-gid/i.test(HostName)) {
+  Anchor = /.+&(st\.)?link=/i;  After = /&st\.name=.*/i;
 }
 else if (/overclockers/i.test(HostName)) {
   rwLink = link => {
