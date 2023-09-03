@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.24
+// @version         4.25
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -359,8 +359,8 @@ else if (/twitter/i.test(HostName)) {
 else if (/upwork/i.test(HostName)) {
   Anchor = /.+leaving-odesk\?ref=/i;
 }
-else if (/vk|zoon/i.test(HostName)) {
-  Anchor = /.+to=/i;  After = /[?&](cc_key|from_content|post|hash)=.*/i;
+else if (/(^|\.)vk\.com$/i.test(HostName)) {
+  Anchor = /.+away\.php\?to=/i;  After = /&(cc_key|from_content|post)=.*/i;
 }
 else if (/yandex/i.test(HostName)) {
   Anchor = /.+&img_url=/i;  After = /&(pos|rpt|ysclid)=.*/i;
@@ -379,6 +379,9 @@ else if (/youtube/i.test(HostName)) {
     if (/^http.+[?&]q=/i.test(link.href))
       link.href = decodeURIComponent(link.href.replace(/.+[?&]q=|&(v|redir_token|stzid)=.*/ig, ''));
   }
+}
+else if (/zoon/i.test(HostName)) {
+  Anchor = /.+redirect\/\?to=/i;  After = /&hash=.*/i;
 }
 
 //   Redirecting wrong link to right link from outer app.
