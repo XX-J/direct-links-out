@@ -2,14 +2,15 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.25
+// @version         4.26
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
 // @homepageURL     https://github.com/XX-J/Direct-links-out
+// @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct links out.user.js
+// @downloadURL     https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct links out.user.js
 // @run-at          document-start
 // @icon            data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAXUlEQVR42uSRNQKAQAwEF+n49D4cd2dCfZkqMqdSd2ENq3viQQDlQ9gUFj6UcmtVaiYwnlfmI9E4C/SsMG75IsD4Vo0IPtXxSL7U4dL+8w/exlH4mEtciNJv8GkAAEAuRV4BUFYYAAAAAElFTkSuQmCC
-// @updateURL       https://raw.githubusercontent.com/XX-J/Direct-links-out/master/Direct%20links%20out.user.js
 //   2baksa
 // @include         /^https?://([^./]+\.)*2baksa\.[^./]+//
 //   4PDA
@@ -68,7 +69,7 @@
 //   Messenger
 // @match           *://*.messenger.com/*
 //   Addons.Mozilla.Org
-// To allow extensions to work on sites from FireFox "black list" (like AMO) clean this "black list" by set `extensions.webextensions.restrictedDomains = ""`  and  `privacy.resistFingerprinting.block_mozAddonManager = true` in `about:config`.
+// To allow extensions to work on sites from FireFox "black list" (like AMO) clean this "black list" by set `extensions.webextensions.restrictedDomains = ""`  and  `privacy.resistFingerprinting.block_mozAddonManager = true` on about:config page.
 // @match           *://addons.mozilla.org/*
 //   MySKU
 // @include         *://mysku.tld/*
@@ -115,6 +116,8 @@
 // @match           *://*.tumblr.com/*
 //   Twitter
 // @match           *://*.twitter.com/*
+//   uCoz
+// @match           *://*.ucoz.ru/*
 //   Upwork
 // @match           *://*.upwork.com/*
 //   USBDev
@@ -351,10 +354,14 @@ else if (/tumblr/i.test(HostName)) {
 else if (/twitter/i.test(HostName)) {
   rwLink = async link => {
     if (/^https?:\/\/t\.co\//i.test(link.href)) {
-      if (/^((ht|f)tp|\/\/|magnet|ed2k)/i.test(link.text)) link.href = link.text.replace('…', '');
-      else link.href = (await (await fetch(link.href)).text()).replace(/.+\<title\>|\<\/title.+/ig, '');
+      if (/^((ht|f)tps?|magnet|ed2k):/i.test(link.text)) link.href = link.text.replace('…', '');
+      else link.href = (await (await fetch(location.protocol + '//' + link.hostname + link.pathname)).text())
+        .replace(/.+\<title\>|\<\/title.+/ig, '');
     }
   }
+}
+else if (/ucoz|yaplakal/i.test(HostName)) {
+  Anchor = /.+\/go(\/)?\?/i;
 }
 else if (/upwork/i.test(HostName)) {
   Anchor = /.+leaving-odesk\?ref=/i;
@@ -371,11 +378,7 @@ else if (/yandex/i.test(HostName)) {
     }
   }
 }
-else if (/yaplakal/i.test(HostName)) {
-  Anchor = /.+go\/\?/i;
-}
-else if (/youtube/i.test(HostName)) {
-  rwHRef = link => {
+else if (/youtube/i.test(HostName)) {  rwHRef = link => {
     if (/^http.+[?&]q=/i.test(link.href))
       link.href = decodeURIComponent(link.href.replace(/.+[?&]q=|&(v|redir_token|stzid)=.*/ig, ''));
   }
@@ -384,6 +387,8 @@ else if (/zoon/i.test(HostName)) {
   Anchor = /.+redirect\/\?to=/i;  After = /&hash=.*/i;
 }
 
-//   Redirecting wrong link to right link from outer app.
+//   Redirecting wrong link to right link from outer app:
 if (window == top) rwHRef(location);
+
+//   Run main function:
 document.readyState == "loading" ? document.addEventListener('DOMContentLoaded', rwAll, { once: true }) : rwAll();
