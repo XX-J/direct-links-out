@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.30
+// @version         4.31
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -318,9 +318,10 @@ else if (/pixiv/i.test(HostName)) {
   Anchor = /.+\/jump\.php\?(url=)?/i;
 }
 else if (/playground|rubattle/i.test(HostName)) {
-  rwHRef = link => {
-    if (/^http.+\/redirect\//i.test(link.href)) link.href = decodeURIComponent(link.href.replace(/.+\/redirect\//i, ''))
-      .replace(/[^/]+/, m => /\./.test(m) ? "http://" + m : m + ":/")
+  rwHRef = async link => {
+    if (/^http.+\/redirect\/tzr\//i.test(link.href)) link.href = (await fetch(link.href)).url;
+    if (/^http.+\/redirect\/(?!tzr\/)/i.test(link.href)) link.href = decodeURIComponent(link.href.replace(/.+\/redirect\//i, ''))
+      .replace(/[^/]+/, m => /\./.test(m) ? "http://" + m : m + ":/");
   }
 }
 else if (/rambler/i.test(HostName)) {
