@@ -3,13 +3,12 @@ name: Add new site(s), change already present...
 about: "-->"
 title: Target site name
 assignees: XX-J
-
 ---
 
 
- **Need link on page, where i may see "wrong"-type link(s):**
+ **Need link on page, on which i may see "wrong" links:**
 
- [PASTE_LINK_HERE](https://href.li/?PASTE_LINK_HERE)
+ [PASTE LINK HERE](https://href.li/?PASTE LINK HERE)
 
  **Brief description** (if necessary):
 
