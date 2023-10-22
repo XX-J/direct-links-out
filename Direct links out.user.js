@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.31
+// @version         4.32
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -44,6 +44,7 @@
 //   Google
 // @include         *://www.google.tld/*
 // @match           *://news.google.com/*
+// @match           *://chromewebstore.google.com/*
 //   Instagram
 // @match           *://*.instagram.com/*
 //   iXBT
@@ -261,6 +262,9 @@ else if (/news\.google/i.test(HostName)) {
       link.href = jslog.slice(jslog.indexOf('"') + 1, jslog.lastIndexOf('"'));
     }
   }
+}
+else if (/chromewebstore\.google/i.test(HostName)) {
+  IgnoreClickListener = ['a[jscontroller][jsaction]'];
 }
 else if (/ixbt/i.test(HostName)) {
   Anchor = /.+\/live\/redirect\//i;
