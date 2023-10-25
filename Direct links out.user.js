@@ -224,8 +224,12 @@ else if (/deviantart/i.test(HostName)) {
 else if (/disq/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
 }
-else if (/2baksa|electrotransport|fishki|liveinternet|mcpedl|oszone|reactor|repack|soundcloud|steam|topwar|wikimapia/i.test(HostName)) {
+else if (/2baksa|electrotransport|fishki|liveinternet|mcpedl|oszone|reactor|repack|steam|topwar|wikimapia/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;
+}
+else if(/soundcloud/i.test(HostName)) {
+  Anchor = /.+[?&]url=/i;
+  After = /&token=/i;
 }
 else if (/facebook|instagram|messenger/i.test(HostName)) {
   Anchor = /.+[?&]u=/i;  After = /[?&](e|h|fbclid)=.*/i;
