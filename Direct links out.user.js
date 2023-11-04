@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.32
+// @version         4.33
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -139,10 +139,11 @@
 
 
 let IgnoreClickListener;  //  Array of selectors a anchor elements and/or their parent elements.
-let ConvertToAncEl;  //  String of selectors elements, that must be converted to anchor elements.
-let rmAttributes;  //  Array of attributes, that must be deleted at anchor elements.
-let Anchor, After;  //  Regular expressions, which point on trash in start and end of HRef string in link.
+let ConvertToAncEl;      //  String of selectors elements, that must be converted to anchor elements.
+let rmAttributes;       //  Array of attributes, that must be deleted at anchor elements.
+let Anchor, After;     //  Regular expressions, which point on trash in start and end of HRef string in link.
 let HostName = location.hostname, Location = location.href;
+
 
 function ConvertToAnchorElement(Node) {
   let AnchorElement = document.createElement('a');
@@ -190,7 +191,10 @@ function rwAll() {
 
 //   Determine anchors, functions and observers:
 
-if (/4pda/i.test(HostName)) {
+if (/2baksa|electrotransport|fishki|liveinternet|mcpedl|oszone|reactor|repack|steam|topwar|wikimapia/i.test(HostName)) {
+  Anchor = /.+[?&]url=/i;
+}
+else if (/4pda/i.test(HostName)) {
   Anchor = /.+\?u=/i;  After = /&[mnef]=.*/i;
 }
 else if (/adguard|github/i.test(HostName)) {
@@ -223,9 +227,6 @@ else if (/deviantart/i.test(HostName)) {
 }
 else if (/disq/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /:[^.:]{9,}$/;
-}
-else if (/2baksa|electrotransport|fishki|liveinternet|mcpedl|oszone|reactor|repack|soundcloud|steam|topwar|wikimapia/i.test(HostName)) {
-  Anchor = /.+[?&]url=/i;
 }
 else if (/facebook|instagram|messenger/i.test(HostName)) {
   Anchor = /.+[?&]u=/i;  After = /[?&](e|h|fbclid)=.*/i;
@@ -346,6 +347,9 @@ else if (/rutracker/i.test(HostName)) {
 else if (/slack/i.test(HostName)) {
   rmAttributes = ['onclick', 'onmouseover'];
 }
+else if (/soundcloud/i.test(HostName)) {
+  Anchor = /.+\?url=/i;  After = /&token=.*/i;
+}
 else if (/subscribestar/i.test(HostName)) {
   rmAttributes = ['data-href'];
   Anchor = /.+\?url=/i;  After = /\n/g;
@@ -368,9 +372,12 @@ else if (/tumblr/i.test(HostName)) {
 else if (/twitter/i.test(HostName)) {
   rwLink = async link => {
     if (/^https?:\/\/t\.co\//i.test(link.href)) {
-      if (/^((ht|f)tps?|magnet|ed2k):/i.test(link.text)) link.href = link.text.replace('…', '');
-      else link.href = (await (await fetch(location.protocol + '//' + link.hostname + link.pathname)).text())
-        .replace(/.+\<title\>|\<\/title.+/ig, '');
+      if (/^((ht|f)tps?|magnet|ed2k):(?!\/\/t\.co\/)/i.test(link.text)) link.href = link.text.replace('…', '');
+      else {
+        link.href = (await (await fetch(location.protocol + '//' + link.hostname + link.pathname)).text())
+          .replace(/.+\<title\>|\<\/title.+/ig, '');
+        if (/^https?:\/\/t\.co\//i.test(link.text)) link.text = link.hostname + link.pathname + link.search + link.hash;
+      }
     }
   }
 }
