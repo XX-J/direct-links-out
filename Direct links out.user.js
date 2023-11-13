@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name            Direct links out
 // @name:ru         Прямые ссылки наружу
-// @version         4.33
+// @version         4.34
 // @description     Removes all this "You are leaving our site..." and other redirection trash from links.
 // @description:ru  Убирает все эти "Бла-бла-бла, вы покидаете наш сайт..." и остальную переадресацию из ссылок.
 // @author          nokeya & XX-J...
@@ -63,6 +63,7 @@
 //   LRepacks
 // @include         *://lrepacks.tld/*
 //   Mail.ru
+// @match           *://e.mail.ru/*
 // @match           *://my.mail.ru/*
 // @match           *://otvet.mail.ru/*
 //   MCPEDL.com
@@ -289,6 +290,9 @@ else if (/kickassto/i.test(HostName)) {
 }
 else if (/linkedin/i.test(HostName)) {
   Anchor = /.+[?&]url=/i;  After = /&(trk|messageThreadUrn)=.*/i;
+}
+else if (/e\.mail\.ru/i.test(HostName)) {
+  IgnoreClickListener = ['.letter-body a'];
 }
 else if (/my\.mail\.ru/i.test(HostName)) {
   Anchor = /.+\?u=/i;  After = /&c=.*/i;
